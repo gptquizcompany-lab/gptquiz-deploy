@@ -29,6 +29,8 @@ socketio = SocketIO(
     async_mode="eventlet",
     ping_timeout=10   
 )
+with project.app_context():
+    DATABASE.create_all()
 
 
 def background_cache_cleanup(app):
