@@ -1,0 +1,475 @@
+* {
+    color: white;
+}
+.reportsLink {
+    opacity: 1;
+    width: 100%;
+}
+#deleteReport{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 52px;
+    height: 52px;
+    background-color: #212121;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.main {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 40px;
+    gap: 10px;
+}
+.main h1{
+    font-size: 26px;    
+    font-weight: 500;   
+}
+.report{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+    align-items: center; 
+    padding: 10px 20px 30px;
+    gap: 10px;
+    background-color: #3A3A3A;
+    border-radius: 30px;
+}
+
+.header-report{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+
+}
+.tabs{
+    display: flex;
+    gap: 10px;
+}
+.selected{
+    color: #9C47FF;
+    border: none;
+    border-bottom: #9C47FF 5px solid;
+}
+.not {
+    color: #AFAFAF;
+    border: none;
+}
+
+.tab{
+    font-size: 22px;
+    font-weight: 300;
+    border-radius: 5px;
+    cursor: pointer;
+    background: none;
+    padding: 10px;
+}
+.sorting{
+    display: flex;
+    align-items: center;
+}
+.sorting p{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 20px;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 300;
+
+}
+
+#sortBtn{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 15px;
+    background-color: #505050;
+    border-radius: 8px;
+    border: white 1px solid;
+    cursor: pointer;
+}
+.judah {
+    position: relative;
+    width: 98%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    border: 2px solid #2b2b2b;
+}
+.judah.hide {
+    display: none;
+}
+.colors-of-correctness {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+}
+.colors-of-correctness div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+#correct {
+    width: 20px;
+    height: 20px;
+    background-color: #04C184;
+    border-radius: 45px;
+}
+#wrong {
+    width: 20px;
+    height: 20px;
+    background-color: #F03C39;
+    border-radius: 45px;
+}
+#passed {
+    width: 20px;
+    height: 20px;
+    background-color: #626875;
+    border-radius: 45px;
+}
+
+.sort-data {
+    width: 100%;
+    height: 44px;
+    position: relative;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 155px 1fr 220px;
+    padding: 0 30px;
+    background-color: #2b2b2b;
+}
+.sort-data p {
+    font-size: 20px;
+    
+}
+.table-headers {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.table-head {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+}
+.data {
+    display: flex;
+    gap: 20px;
+}
+.student-card {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 155px 1fr 220px;
+    width: 100%;
+    height: 85px;
+    gap: 25px;
+    padding: 10px 30px;
+    border-top: #2B2B2B 2px solid;
+    cursor: pointer;
+}
+.student-card h5 {
+    font-size: 18px;
+    font-weight: 400;
+}
+.data h5 {
+    width: 100px;
+    text-align: center;
+}
+.successful-a {
+    height: 22px;
+    background-color: #2b2b2b;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    overflow: hidden;
+}
+.answer {
+    width: 100%;
+    height: 100%;
+}
+.correct {
+    background-color: #04C184;
+}
+.wrong {
+    background-color: #F03C39;
+}
+.skipped {
+    background-color: #626875;
+}
+
+.modal {
+    display: flex;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    flex-direction: column;
+    align-items: center;
+    width: 1200px;
+    max-width: 95vw;
+    max-height: 90vh;
+    background-color: #414141;
+    border-radius: 15px;
+    padding: 20px 10px;
+    gap: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+.what-student h3 {
+    font-size: 24px;
+    font-weight: 300;
+}
+
+#blurrrr {
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 15;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(3.5px);
+}
+
+#blurrrr.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+::-webkit-scrollbar {
+    display: block;
+}
+
+.line-between{
+    width: 100%;
+    height: 1px;
+    background-color: #696969;  
+}
+#modalAnswers{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    overflow-y: auto;
+}
+.question{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    gap: 20px;
+    width: 100%;
+    background-color: #323232;
+    border-radius: 5px;
+}
+.question h3{
+    font-size: 24px;
+    font-weight: 400;
+}
+.question h4{
+    font-size: 20px;
+    font-weight: 300;
+}
+.correctQ{
+    border-top: #22CE00 4px solid;
+}
+.wrongQ{
+    border-top: #F03C39 4px solid;
+}
+.skippedQ {
+    border-top: #626875 4px solid;
+}
+.answers{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.points{
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 24px;
+    font-weight: 400;
+}
+#closeModal {
+    width: 152px;
+    height: 41px;
+    border-radius: 5px;
+    background-color: #B26FFF;
+    border: none;
+    cursor: pointer;
+}
+.buttons {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}
+.button {
+    width: 152px;
+    height: 41px;
+    font-size: 16px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#cancel {
+    background-color: #B26FFF;
+    border: none;
+}
+#confirm {
+    background: none;
+    border: 2px solid white;
+}
+/*  */
+.chart-container {
+    width: 98%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.chart-container.hide {
+    display: none;
+}
+.chart-card {
+    position: relative;
+    background: #272727;
+    border: 1px solid #2b2b2b;
+    border-radius: 12px;
+    padding: 25px;
+    width: 100%;
+}
+
+.chart-card h3 {
+    text-align: center;
+    color: #fff;
+    font-weight: 500;
+}
+.tab-content.hide {
+    display: none;
+}
+.questions-container {
+    width: 98%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.questions-container > div {
+    display: flex;
+    flex-direction: column;
+    background-color: #323232;
+    padding: 15px;
+    border-radius: 15px;
+    gap: 10px;
+}
+.questions-container div h3 {
+    font-weight: 500;
+    font-size: 20px;
+}
+.questions-block {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+}
+.question-block {
+    background-color: #656565;
+    padding: 5px 7px;
+    border-radius: 5px;
+}
+.question-block p {
+    font-size: 16px;
+    font-weight: 300;
+}
+.progress-bar {
+    position: relative;
+    display: flex;
+    gap: 4px;
+    width: 100%;
+    height: 10px;
+    border-radius: 45px;
+    overflow: hidden;
+    background-color: #212121;
+}
+.progress {
+    height: 100%;
+    min-width: 5px;
+}
+.correct-bar {
+    background-color: #22CE00;
+}
+.incorrect-bar {
+    background-color: #F03C39;
+}
+.skipped-bar {
+    background-color: #626875;
+}
+.numbers {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.number-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    gap: 5px;
+    border-radius: 5px;
+    background-color: #2B2B2B;
+}
+.number-container span {
+    font-weight: 600;
+    color: #B26FFF;
+}
+.main-content-modal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-height: 80vh;
+    gap: 10px;
+    flex-grow: 1;
+    overflow: hidden;
+}
+.charts {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    max-height: 80vh;
+}
+#timeChart, #questionsChart {
+    min-width: 100%;
+}
+#selectedOptionGraphic {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    color: #212121;
+}
+#selectedOptionGraphic option {
+    color: #212121;
+}

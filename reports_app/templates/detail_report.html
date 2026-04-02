@@ -1,0 +1,126 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+Звіт №{{ room.id }}
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('reports_app.static', filename='css/detail_report.css') }}">
+{% endblock %}
+
+{% block name_page %}
+Результати вікторини
+{% endblock %}
+
+{% block content %}
+<h1>{{ room.roomsQuiz.name }}</h1>
+<div class="report">
+    <div class="header-report">
+        <div class="tabs">
+            <button class="tab selected" id="general" data-tab="general">Загальний огляд</button>
+            <button class="tab not" id="questions" data-tab="questions">Питання</button>
+            <button class="tab not" id="graphic" data-tab="graphic">Графік</button>
+        </div>
+        <div class="sorting tab-content" data-content="general">
+            <p>Сортирувати за %: <button id="sortBtn"><</button></p>
+        </div>
+    </div>
+    <div class="questions-container tab-content hide" data-content="questions"></div>
+    <div class="chart-container tab-content hide" data-content="graphic">
+        <div class="chart-card">
+            <select id="selectedOptionGraphic">
+                <option value="successful" selected>Успішність по запитанням</option>
+                <option value="timeSpent">Середн. час на запитання</option>
+            </select>
+            <h3>Успішність відповідей по питаннях</h3>
+            <div class="charts">
+                <div id="questionsChart"></div>
+            </div>
+        </div>
+
+        <input type="hidden" id="room_id" value="{{ room.id }}">
+    </div>
+    <div class="judah tab-content" data-content="general">
+        <div class="participants-info">
+            <div class="colors-of-correctness">
+                <div>
+                    <span id="correct"></span>
+                    <p>Правильні</p>
+                </div>
+                <div>
+                    <span id="wrong"></span>
+                    <p>Помилка</p>
+                </div>
+                <div>
+                    <span id="passed"></span>
+                    <p>Пропущені</p>
+                </div>
+            </div>
+        </div>
+        <div class="sort-data">
+            <p>Ім'я</p>
+            <div></div>
+            <div class="table-headers">
+                <div class="table-head">
+                    <p>Оцінка</p>
+                </div>
+                <div class="table-head">
+                    <p>Точність</p>
+                </div>
+            </div>
+        </div>
+        <div id="studentsContainer">
+            {% for student in report %}
+                {% if student.report %}
+                    <div class="student-card" data-student-id="{{ student.participant_id }}">
+                        <h5 class="nickname">{{ student.nickname }}</h5>
+                        <div class="successful-a">
+                            {% for ans in student.answers %}
+                                <span class="answer {% if ans.your_answer == 'Пропущений...' %}skipped{% elif ans.is_correct %}correct{% else %}wrong{% endif %}"></span>
+                            {% endfor %}
+                        </div>
+                        <div class="data">
+                            <div>
+                                <h5 class="grade">{{ student.grade }}</h5>
+                            </div>
+                            <div>
+                                <h5 class="percent">{{ student.percent }}%</h5>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div id="blurrrr"></div>
+<div id="studentModal" class="modal">
+    <div class="what-student">
+        <h3>Результати <b id="nicknameStudent"></b></h3>
+    </div>
+    <div class="line-between"></div>
+    <div class="main-content-modal">
+        <div class="charts">
+            <div id="timeChart">
+
+            </div>
+        </div>
+        <div id="modalAnswers">
+            
+        </div>
+    </div>
+    <button id="closeModal" type="button">ОК</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename= 'js/ApexCharts.js') }}"></script>
+    <script src="{{ url_for('reports_app.static', filename='js/sort.js') }}"></script>
+    <script src="{{ url_for('reports_app.static', filename='js/roomChartTime.js') }}"></script>
+    <script src="{{ url_for('reports_app.static', filename='js/chart_switcher.js') }}"></script>
+    <script src="{{ url_for('reports_app.static', filename='js/room_charts.js') }}"></script>
+    <script src="{{ url_for('reports_app.static', filename='js/getQuestions.js') }}"></script>
+    <script src="{{ url_for('reports_app.static', filename='js/studentChartTime.js') }}"></script>
+    <script src="{{ url_for('reports_app.static', filename='js/loadInfoStudent.js') }}"></script>
+    <script src="{{ url_for('reports_app.static', filename='js/switch.js') }}"></script>
+{% endblock %}

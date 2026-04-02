@@ -1,0 +1,22 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Авторизація | GPTQuiz</title>
+        <link rel="stylesheet" href="{{ url_for('execution_app.static', filename='css/login_student.css') }}">
+    </head>
+    <body>
+        <form method="post" class='form_enter'>
+            <h1>GPTQuiz</h1>
+            <div class='inputs'>
+                <input type="text" name="login" placeholder="Введіть логін">
+                <input type="password" name="password" placeholder="Введіть пароль">
+                <p>*Введіть дані від аккаунту наданими вчителем</p>
+                {% if error and error == "USER_DOESNT_EXISTS" %}
+                    <p class="error">Неправильний логін або пароль.</p>
+                {% endif %}
+                <button class="button_code" type="submit">ПРИЄДНАТИСЬ</button> 
+            </div> 
+        </form>
+    </body>
+</html>

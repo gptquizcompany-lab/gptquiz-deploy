@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('user_app.static', filename='css/login.css')}}">
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <div class="login-block">
+            <h2>Вхiд</h2>
+            <div class="choose-login">
+                <button type="button" id="teacher" class="button-auth {% if selected %}selected{% endif %}">Вчитель</button>
+                <button type="button" id="student" class="button-auth {% if not selected %}selected{% endif %}">Учень</button>
+            </div>
+            <div class="inputs">
+                <input type="text" name="login" placeholder="Логін *" required>
+                <input type="password" name="password" placeholder="Пароль *" required>
+                {% if error_msg %}
+                    <p class="error-msg">{{ error_msg }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="submit">
+            <button name="button" id="btnSubmit" value="{% if selected %}teacher{% elif not selected%}student{% endif %}">Увiйти</button>
+            <p>Не маєте аккаунту? <a href="/signup/">Зареєструватися</a></p>
+        </div>
+    </form>
+    <script src="{{ url_for('user_app.static', filename='js/login.js') }}"></script>
+{% endblock %}

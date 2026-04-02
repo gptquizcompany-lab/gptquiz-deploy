@@ -1,0 +1,17 @@
+{% extends 'base_student.html' %}
+
+{% block title %}
+    Мій клас {{ current_user.classroom.number }}-{{ current_user.classroom.char }}
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('student_app.static', filename= 'css/student_classroom.css') }}">
+{% endblock %}
+
+{% block name_page %}
+    Мій клас {{ current_user.classroom.number }}-{{ current_user.classroom.char }}
+{% endblock %}
+
+{% block content %}
+    
+{% endblock %}

@@ -1,0 +1,21 @@
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 8px;
+    gap: 10px;
+}
+.avatar-container {
+    width: 100px;
+}
+.avatar-container img {
+    width: 100%;
+}
+.nickname-container {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+}
+.nickname-container * {
+    color: #FFFFFF;
+}

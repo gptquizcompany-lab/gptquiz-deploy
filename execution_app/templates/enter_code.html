@@ -1,0 +1,30 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ввести код | GPTQuiz</title>
+        <link rel="stylesheet" href="{{ url_for('execution_app.static', filename='css/execution.css') }}">
+    </head>
+    <body>
+        <header id="header">
+            <div class="title-logo" href="/">
+                <img src="{{ url_for('static', filename= 'images/atom.svg') }}">
+                <h1>GPTQuiz</h1>
+            </div>
+        </header>
+        <form method="get" action="/execution" class = 'form_enter'>
+            <p>GPTQuiz</p>
+            <div class = 'input_code'>
+                <input type="text" name="code" placeholder="Введіть код">
+                <button class="button_code" type="submit">ПРИЄДНАТИСЬ</button>
+                {% if error == "USER_NOT_FROM_THIS_CLASSROOM" %}
+                    <div class="error-container">
+                        <p class="error-text">Вибачте, але ви не з цього класу.</p>
+                        <p class="error-text">Вам доступ заборонений.</p>
+                        <a href="/logout?redirect_to=/execution?code={{ code }}">Вийти з акаунту</a>
+                    </div> 
+                {% endif %}
+            </div> 
+        </form>
+    </body>
+</html>

@@ -1,0 +1,191 @@
+.myClassLink {
+    opacity: 1;
+    width: 100%;
+}
+.main {
+    display: flex;
+    flex-direction: column;
+    padding: 35px;
+    gap: 20px;
+}
+.no-classrooms-text {
+    color: white;
+    opacity: 0.8;
+}
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    background: #202020;
+    padding: 10px;
+    gap: 10px;
+    border-radius: 10px;
+}
+.classroom-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #cecece;
+    border-radius: 5px;
+    color: #3860FD;
+}
+.headerClassroom {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+#addnewclass {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    background-color: #22CE00;
+    color: white;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+}
+.create-form {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 250px;
+    background-color: #2b2b2b;
+    border-radius: 15px;
+    padding: 25px;
+    gap: 20px;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.3s ease;
+    z-index: 7;
+}
+.create-form * {
+    color: white;
+}
+.create-form p {
+    font-size: 20px;
+}
+.create-form h3 {
+    font-size: 16px;
+    color: #e92c2c;
+}
+.create-form div {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.create-form label {
+    font-size: 18px;
+}
+.create-form div input {
+    width: 35px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px #181818 solid;
+    background-color: #202020;
+    text-align: center;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}   
+.create-form button {
+    cursor: pointer;
+}
+.submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: #9C47FF;
+    border: none;
+}
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 25px;
+    background: none;
+    border: none;
+}
+.close img {
+    width: 25px;
+}
+.blur {
+    position: fixed;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(2.5px);
+    z-index: 6;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.3s ease;
+}
+.hideform {
+    opacity: 0;
+    visibility: hidden;
+}
+#add {
+    width: 100%;
+    height: 40px;
+    background-color: #1ca700;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-family: "inter";
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+}
+#formCourse div{
+    flex-direction: column;
+    gap: 5px;
+    justify-content: flex-start;
+    width: 100%;
+    align-items: flex-start;
+}
+#formCourse input {
+    width: 100%;
+}
+#classroom {
+    color: black;
+    height: 35px;
+    width: 100%;
+    border-radius: 5px;
+}
+#classroom option {
+    color: #202020;
+}
+.course {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #cecece;
+    border-radius: 5px;
+    color: #2b43a5;
+}
+.course div {
+    display: flex;
+    width: 100%;
+    justify-content: start;
+    gap: 10px;
+}

@@ -1,0 +1,137 @@
+.main {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+	gap: 25px;
+}
+.search {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 150px;
+	background-color: #252525;
+	width: 100%;
+	gap: 10px;
+}
+.search h2 {
+	font-family: "Inter";
+	font-size: 26px;
+	font-weight: 300;
+	color: white;
+}
+.search form img {
+	width: 25px;
+	height: 25px;
+}
+.search form {
+	height: 40px;
+	background-color: white;
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	max-width: 95%;
+	padding-left: 10px;
+	padding-right: 5px;
+}
+.search form input {
+	height: 100%;
+	width: 450px;
+	border: none;
+	padding-left: 5px;
+	font-family: "Inter";
+	font-size: 14px;
+}
+.search form button {
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+.active-quizes {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+	gap: 10px;
+}
+.active-quizes h2 {
+	font-family: "inter";
+	font-size: 24px;
+	color: white;
+}
+.quizes {
+	display: flex;
+	justify-content: center;
+	align-items: start;
+	flex-wrap: wrap;
+	max-width: 100%;
+	padding: 25px;
+	gap: 25px;
+}
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(15px);
+	}
+	to {
+		opacity: 1;
+	}
+}
+.quiz {
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	flex-direction: column;
+	width: 300px;
+	height: 275px;
+	border-radius: 20px;
+	background-color: #3e3e3e;
+	gap: 5px;
+	box-shadow:
+		0 1px 2px rgba(0, 0, 0, 0.07),
+		0 2px 4px rgba(0, 0, 0, 0.07),
+		0 4px 8px rgba(0, 0, 0, 0.07),
+		0 8px 16px rgba(0, 0, 0, 0.07),
+		0 16px 32px rgba(0, 0, 0, 0.07);
+	overflow: hidden;
+	animation: 0.5s fadeIn ease-in-out;
+	transition: all 0.3s ease-in-out;
+}
+.quiz:hover {
+	box-shadow:
+		0 1px 2px rgba(0, 0, 0, 0.17),
+		0 2px 4px rgba(0, 0, 0, 0.17),
+		0 4px 8px rgba(0, 0, 0, 0.17),
+		0 8px 16px rgba(0, 0, 0, 0.17),
+		0 16px 32px rgba(0, 0, 0, 0.17);
+	transform: translateY(-10px);
+}
+.quiz img {
+	width: 100%;
+	height: 120px;
+	object-fit: cover;
+}
+.quiz h3 {
+	font-family: "inter";
+	font-size: 20px;
+	color: white;
+	text-align: center;
+}
+.quiz p {
+	font-family: "inter";
+	font-size: 16px;
+	color: white;
+	text-align: center;
+	opacity: 0.8;
+}
+.quiz hr {
+	width: 90%;
+	background-color: #ffffffb7;
+	color: #ffffffb7;
+}
+.quiz-description {
+	height: 45px;
+}

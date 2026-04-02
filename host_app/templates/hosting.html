@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+        <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/atom.svg') }}">
+        <link rel="stylesheet" href="{{ url_for('host_app.static', filename='css/hostingroom.css') }}">
+        <title>Квіз {{ code }} | GPTQuiz</title>
+    </head>
+    <body>
+        <div class="room-info">
+            <div class="bottom-box" style="display: none;">
+                <div id="timerDiv">
+                    <img id="timerIMG" src="{{ url_for('host_app.static', filename='images/timer.svg') }}">
+                    <div id="timer">
+                        <h2 id="timerText">0</h2>
+                    </div>
+                </div>
+                <div id="timeControl">
+                    <button id="15sAdd" class="controlers">
+                        <div class="controller-content">
+                            <p>+15 сек</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <div id="resultsContainer"></div>
+            <div id="QandR"></div>
+            <div id="room">
+                <div class="how-to-join">
+                    <div>
+                        <h3>1</h3>
+                    </div>
+                    <h4>Приєднайтеся за посиланням</h4>
+                    <button id="copy-url"><img class="img-copy" src="{{ url_for('host_app.static', filename='images/copy.svg') }}"></button>
+                </div>
+                <a href="" onclick="window.open(this.href); return false;" id="linkToJoin">joinqptquiz.com</a>
+                <div class="line"></div>
+                <div class="how-to-join">
+                    <div>
+                        <h3>2</h3>
+                    </div>
+                    <h4>Приєднайтеся за кодом</h4>
+                    <button id="copy-code"><img class="img-copy" src="{{ url_for('host_app.static', filename='images/copy.svg') }}"></button>
+                </div>
+                <h2 id="codeDisplay">{{ code }}</h2>
+                <div class="start-button-container">
+                    <button id="start-quiz">
+                        <div class="start-content">
+                            <img src="{{ url_for('host_app.static', filename='images/start.svg') }}">
+                            <p>Почати вікторину</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <div class="participants">
+                <button id="settingsBtn">
+                    <img src="{{ url_for('host_app.static', filename='images/settings.svg') }}" alt="settings">
+                </button>
+                <h2 id="usersText">Участники:</h2>
+                <div id="users"></div>
+            </div>
+        </div>
+        <div class="mini-menu">
+            
+        </div>
+
+        <div id="modalImage" class="modal hidemodal">
+            <button id="closeModal"><img src="{{ url_for('library_app.static', filename='images/close.svg') }}"></button>
+            <div>
+                <img id="modalImageContent" src="" alt="Modal Image">
+            </div>
+        </div>
+        <div id="modalDelete" class="modal hidemodal">
+            <div class="contentModal">
+                <h3>Ви дійсно хочете видалити</h3>
+                <p id="participantToDelName">?</p>
+                <div class="buttonsModal">
+                    <button type="button" class="closeBtn" id="closeModalDel">Скасувати</button>
+                    <button type="button" class="submitBtn" id="deleteParticipant">Видалити</button>
+                </div>
+            </div>
+        </div>
+        <div id="modalSettings" class="modal hidemodal">
+            <h3>Налаштування</h3>
+            <div class="contentModal">
+                <div class="audioContainer">
+                    <div>
+                        <img src="{{ url_for('host_app.static', filename='images/volume.svg') }}" alt="settings">
+                        <p>Гучність</p>
+                    </div>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.1">
+                </div>
+            </div>
+        </div>
+        <div id="Wblur" class="hideblur"></div>
+
+        <script src="{{ url_for('static', filename= 'js/ApexCharts.js') }}"></script>
+        <script src="{{ url_for('host_app.static', filename='js/donut_chart.js') }}"></script>
+        <script>
+            const socket = io();
+            const code = "{{ code }}"; 
+            const div = document.getElementById('QandR');
+            const nextBtn = document.createElement('button');
+            nextBtn.id = 'nextBtn';
+            nextBtn.classList.add("controlers")
+            const controllerContent = document.createElement("div")
+            controllerContent.classList.add("controller-content")
+            const imgBtn = document.createElement("img")
+            imgBtn.src = "{{ url_for('host_app.static', filename= 'images/next.svg') }}"
+            controllerContent.appendChild(imgBtn)
+            nextBtn.appendChild(controllerContent)
+
+            const Wblur = document.getElementById('Wblur');
+            let currentPage = "question_answers"
+            let timerInterval = null;
+            
+            const sound = new Audio('{{ url_for("host_app.static", filename= "audio/music.mp3") }}');
+            sound.loop = true;
+            sound.volume = 0.1
+            const settingsModal = document.getElementById("modalSettings")
+            const deleteModal = document.getElementById("modalDelete")
+            deleteModal.querySelector("#closeModalDel").onclick = () => {
+                deleteModal.classList.add("hidemodal")
+                Wblur.classList.add("hideblur")
+                Wblur.removeEventListener("click", () => {})
+            }
+
+            socket.emit("host_join", { room: code });
+            const buttonStart = document.getElementById("start-quiz");
+            
+            function switchPages (switchPage, question_container, answers_container, button1, button2) {
+                if (switchPage === currentPage) {
+                    return;
+                } 
+                if (switchPage === "question_answers") {
+                    answers_container.classList.add("hideblock")
+                    question_container.classList.remove("hideblock")
+                    currentPage = "questions_answers"
+                    button1.classList.add("selectedNav")
+                    button2.classList.remove("selectedNav")
+                } else if (switchPage === "students_answers") {
+                    question_container.classList.add("hideblock")
+                    answers_container.classList.remove("hideblock")
+                    currentPage = "students_answers"
+                    button2.classList.add("selectedNav")
+                    button1.classList.remove("selectedNav")
+                }
+            }
+            function getAnswerText(n) {
+                if (n === 0) return `${n} відповідей`;
+                const lastDigit = n % 10;
+                const lastTwoDigits = n % 100;
+                if (lastDigit === 1 && lastTwoDigits !== 11) {
+                    return `${n} відповідь`;
+                } else if (lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 10 || lastTwoDigits >= 20)) {
+                    return `${n} відповіді`;
+                } else {
+                    return `${n} відповідей`;
+                }
+            }
+
+            buttonStart.addEventListener("click", () => {
+                if (!sound.paused && sound.currentTime > 0 && !sound.ended) {
+                    return; 
+                }
+                sound.play();
+                socket.emit("quiz_start", {code: code})
+                
+            })
+            
+            document.getElementById("volumeSlider").addEventListener('input', function() {
+                sound.volume = this.value; 
+            });
+            document.getElementById("settingsBtn").onclick = () => {
+                settingsModal.classList.remove("hidemodal")
+                Wblur.classList.remove("hideblur")
+                Wblur.addEventListener("click", () => {
+                    settingsModal.classList.add("hidemodal")
+                    Wblur.classList.add("hideblur")
+                    Wblur.removeEventListener("click", () => {})
+                })
+            }
+            socket.on("redirect_to", data => {
+                window.location.replace(`${window.location.origin}${data.url}`)
+            })
+
+            socket.on("user_list_update", (data) => {
+                const usersList = document.getElementById("users");
+                const usersText = document.getElementById("usersText");
+                usersList.innerHTML = '';
+                let connectedStudents = 0;
+
+                data.students.forEach((student, index) => {
+                    if (student[2] === false) {
+                        return;
+                    }
+                    connectedStudents++;
+                    const li = document.createElement("li");
+                    const divLi = document.createElement("div")
+
+                    divLi.classList.add("divLi")
+                    const nicknameDiv = document.createElement("div")
+                    nicknameDiv.classList.add("nickname-div")
+                    const counterDiv = document.createElement("div")
+                    counterDiv.classList.add("counter-div")
+                    const counterText = document.createElement("p")
+                    counterText.textContent = `${index + 1}`
+                    counterDiv.appendChild(counterText)
+                    nicknameDiv.appendChild(counterDiv)
+                    const p = document.createElement("p")
+                    p.classList.add("nickname")
+                    p.textContent = student[0];
+                    const nicknameLine = document.createElement("div")
+                    nicknameLine.classList.add("nicknameline")
+                    p.appendChild(nicknameLine)
+                    nicknameDiv.appendChild(p)
+                    divLi.appendChild(nicknameDiv)
+                    li.id = student[1];
+                    li.onclick = () => {
+                        deleteModal.classList.remove("hidemodal")
+                        Wblur.classList.remove("hideblur")
+                        deleteModal.querySelector("#participantToDelName").textContent = `${student[0]}?`
+                        Wblur.addEventListener("click", () => {
+                            deleteModal.classList.add("hidemodal")
+                            Wblur.classList.add("hideblur")
+                            Wblur.removeEventListener("click", () => {})
+                        })
+                        deleteModal.querySelector("#deleteParticipant").onclick = () => {
+                            socket.emit("remove_student", {
+                                code: code,
+                                student: [student[0], student[1]]
+                            })
+                            deleteModal.classList.add("hidemodal")
+                            Wblur.classList.add("hideblur")
+                            Wblur.removeEventListener("click", () => {})
+                        }
+                    }
+                    li.appendChild(divLi)
+                    usersList.appendChild(li);
+                });
+                usersText.textContent = `Участники: (${data.students.length})`;
+            });
+
+            socket.on("remove_student_client", (data) => {
+                const userLi = document.getElementById(data.hash);
+                if (userLi) {
+                    userLi.remove();
+                }
+                usersText.textContent = `Участники: (${document.getElementById("users").childElementCount})`;
+            });
+
+            socket.on("teacher_results", (data) => {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                }
+                currentPage = "question_answers"
+                document.getElementById('timerText').textContent = '0';
+                const container = document.getElementById("resultsContainer");
+                container.innerHTML = "";
+                container.classList.remove("hide")
+                div.innerHTML = ""
+                const avatarUrl = "{{ url_for('host_app.static', filename='images/avatar.svg') }}";
+                const mainContainer = document.createElement("div")
+                mainContainer.classList.add("mainContainer")
+                const questionAnswersContainer = document.createElement("div")
+                questionAnswersContainer.classList.add("question-answers-results") 
+                const studentsContainer = document.createElement("div")
+                studentsContainer.classList.add("studentsContainer")
+                studentsContainer.classList.add("hideblock")
+
+                const checkMarks = document.getElementsByClassName('check_mark');
+                if (checkMarks.length) {
+                    const checkMarksArray = Array.from(checkMarks);
+                    
+                    checkMarksArray.forEach(mark => {
+                        mark.remove();
+                    });
+                }  
+
+                data.results.forEach(res => {
+                    if (res.answer === "Пропущений..." || res.answer === "Пропущений") {
+                        return
+                    }
+                    
+                    const user = document.getElementById(res.hash).querySelector("div")
+                    const checkMark = document.createElement('img') 
+                    if (res.is_correct) {
+                        checkMark.src = '{{ url_for("host_app.static", filename = "images/correct-checkmark.svg") }}'
+                    } else (
+                        checkMark.src = '{{ url_for("host_app.static", filename = "images/incorrect-cross.svg") }}'
+                    )
+                    checkMark.classList.add('check_mark')
+                    user.appendChild(checkMark)
+
+                    const divA = document.createElement("div");
+                    divA.classList.add("student-answer")
+                    divA.classList.add(res.is_correct ? "student-right" : "student-wrong")
+                    divA.innerHTML = `
+                        <div class="student-avatar-nickname">
+                            <img src="${avatarUrl}">
+                            <h4>${res.nickname}</h4>
+                        </div>
+                        <div class="answer-div-second-tab">
+                            <h5>Відповідь:</h5>
+                            <div class="time-spent">
+                                <h6>${res.time_spent} сек</h6>
+                            </div>
+                        </div>
+                        <div class="answers-student">
+                            ${
+                                Array.isArray(res.answer)
+                                ? res.answer.map(ans => `<div><p>${ans}</p></div>`).join("")
+                                : `<div><p>${res.answer}</p></div>`
+                            }
+                        </div>
+                    `;
+                    studentsContainer.appendChild(divA);
+                });
+                if (studentsContainer.childElementCount === 0) {
+                    const placeholderText = document.createElement("h3")
+                    placeholderText.classList.add("placeholderAnswersText")
+                    placeholderText.textContent = "Немає відповідей на це запитання..."
+                    studentsContainer.appendChild(placeholderText)
+                }
+                //
+                const nameQuestionContainer = document.createElement("div")
+                nameQuestionContainer.classList.add("name-question-container")
+                console.log(data.question_data)
+                if (data.question_data.media) {
+                    const nameQuestionMedia = document.createElement("img")
+                    nameQuestionMedia.src = `/library/images/${data.question_data.media}`
+                    nameQuestionMedia.classList.add("name-question-image")
+
+                    const magnifier = document.createElement("img")
+                    magnifier.src = "{{ url_for('host_app.static', filename= 'images/magnifying-glass.svg') }}"
+                    magnifier.classList.add("name-question-magnifier")
+
+                    const wrapper = document.createElement("div")
+                    wrapper.classList.add("name-question-image-wrapper")
+                    wrapper.appendChild(nameQuestionMedia)
+                    wrapper.appendChild(magnifier)
+                    
+                    wrapper.addEventListener('click', () => {
+                        const img = document.getElementById('modalImageContent');
+                        img.src = nameQuestionMedia.src;
+                        const modal = document.getElementById('modalImage');
+                        modal.classList.remove('hidemodal');
+                        Wblur.classList.remove('hideblur');
+                    });
+                    const closeModalBtn = document.getElementById('closeModal');
+                    closeModalBtn.addEventListener('click', () => {
+                        const modal = document.getElementById('modalImage');
+                        modal.classList.add('hidemodal');
+                        Wblur.classList.add('hideblur');
+                    });
+                    Wblur.addEventListener('click', () => {
+                        const modal = document.getElementById('modalImage');
+                        modal.classList.add('hidemodal');
+                        Wblur.classList.add('hideblur');
+                    });
+                    nameQuestionContainer.appendChild(wrapper)
+                }
+                const nameQuestionText = document.createElement("h1")
+                nameQuestionText.classList.add("name-question-text")
+                nameQuestionText.textContent = data.question_data.name
+                const variantsQuestion = document.createElement("div")
+                variantsQuestion.classList.add("variants-question")
+                if (data.question_data.type !== "enter answer") {
+                    data.question_data.variants.forEach(variant => {
+                        if (!variant || variant === undefined || variant === null) return;
+                        const variantContainer = document.createElement("div")
+                        variantContainer.classList.add("variant-container")
+                        const variantText = document.createElement("p")
+                        variantText.classList.add("variant-text")
+                        variantText.textContent = variant.text
+                        const variantProgressBar = document.createElement("div")
+                        variantProgressBar.classList.add("variant-progress-bar")
+                        const variantProgressBarFill = document.createElement("div")
+                        variantProgressBarFill.classList.add("variant-progress-bar-fill")
+                        variantProgressBarFill.style.width = `${variant.answered / document.getElementById("users").childElementCount * 100}%`
+                        const variantProgressBarText = document.createElement("p")
+                        variantProgressBarText.classList.add("variant-progress-bar-text")
+                        variantProgressBarText.textContent = getAnswerText(variant.answered)
+                        variantContainer.appendChild(variantText)
+                        variantProgressBar.appendChild(variantProgressBarFill)
+                        variantProgressBar.appendChild(variantProgressBarText)
+                        variantContainer.appendChild(variantProgressBar)
+                        variantsQuestion.appendChild(variantContainer)
+                    })
+                }
+                nameQuestionContainer.appendChild(nameQuestionText)
+                questionAnswersContainer.appendChild(nameQuestionContainer)
+                questionAnswersContainer.appendChild(variantsQuestion)
+                //
+                const header = document.createElement("header")
+                header.classList.add("header-answers")
+                const navButtonQuestionAnswers = document.createElement("button")
+                navButtonQuestionAnswers.classList.add("selectedNav")
+                navButtonQuestionAnswers.textContent = "Загальний огляд"
+                const navButtonAnswers = document.createElement("button")
+                navButtonAnswers.textContent = "Відповідді"
+                navButtonQuestionAnswers.classList.add("navButton")
+                navButtonAnswers.classList.add("navButton")
+
+                navButtonQuestionAnswers.onclick = () => switchPages("question_answers", questionAnswersContainer, studentsContainer, navButtonQuestionAnswers, navButtonAnswers)
+                navButtonAnswers.onclick = () => switchPages("students_answers", questionAnswersContainer, studentsContainer, navButtonQuestionAnswers, navButtonAnswers)
+
+                header.appendChild(navButtonQuestionAnswers)
+                header.appendChild(navButtonAnswers)
+                mainContainer.appendChild(header)
+                //
+                const diagramContainer = document.createElement("div")
+                diagramContainer.classList.add("diagramContainer")
+                const chartContainer = document.createElement("div")
+                chartContainer.id = "chart"
+                const dataAnswersContainer = document.createElement("div")
+                dataAnswersContainer.classList.add("dataAnswersContainer")
+                //
+                const correctContainer = document.createElement("div")
+                correctContainer.classList.add("dataTexts")
+                const wrongContainer = document.createElement("div")
+                wrongContainer.classList.add("dataTexts")
+                const skippedContainer = document.createElement("div")
+                skippedContainer.classList.add("dataTexts")
+                //
+                const correctImg = document.createElement("img")
+                correctImg.src = "{{ url_for('host_app.static', filename= 'images/correct_answers.svg') }}"
+                correctContainer.appendChild(correctImg)
+                const wrongImg = document.createElement("img")
+                wrongImg.src = "{{ url_for('host_app.static', filename= 'images/wrong_answers.svg') }}"
+                wrongContainer.appendChild(wrongImg)
+                const skippedImg = document.createElement("img")
+                skippedImg.src = "{{ url_for('host_app.static', filename= 'images/skipped_answers.svg') }}"
+                skippedContainer.appendChild(skippedImg)
+                //
+                const correctText = document.createElement("h4")
+                correctText.textContent = `Правильно: ${data.donut_data.correct}/${data.donut_data.total_participiants}`
+                correctContainer.appendChild(correctText)
+                const wrongText = document.createElement("h4")
+                wrongText.textContent = `Неправильно: ${data.donut_data.wrong}/${data.donut_data.total_participiants}`
+                wrongContainer.appendChild(wrongText)
+                const skippedText = document.createElement("h4")
+                skippedText.textContent = `Пропущено: ${data.donut_data.skipped}/${data.donut_data.total_participiants}`
+                skippedContainer.appendChild(skippedText)
+                const summaryPercentage = document.createElement("h4")
+                summaryPercentage.classList.add("percentage")
+                summaryPercentage.textContent = `${((data.donut_data.correct / data.donut_data.total_participiants) * 100).toFixed(0)}%`
+                //
+                diagramContainer.appendChild(chartContainer)
+                diagramContainer.appendChild(summaryPercentage)
+                dataAnswersContainer.appendChild(diagramContainer)
+                dataAnswersContainer.appendChild(correctContainer)
+                dataAnswersContainer.appendChild(wrongContainer)
+                dataAnswersContainer.appendChild(skippedContainer)
+                // 
+                container.appendChild(dataAnswersContainer)
+                mainContainer.appendChild(studentsContainer)
+                mainContainer.appendChild(questionAnswersContainer)
+                container.appendChild(mainContainer)
+
+                renderDonut(data1 = {
+                    correct: data.donut_data.correct,
+                    wrong: data.donut_data.wrong,
+                    skipped: data.donut_data.skipped
+                })
+                if (data.index_question == data.total_questions-1) {
+                    nextBtn.querySelector("div").innerText = "Кінець";
+                    nextBtn.onclick = () => socket.emit("quiz_end_msg", { code: code });
+                } else {
+                    nextBtn.onclick = () => {
+                        socket.emit("next_question", { code: code })
+                        if (!sound.paused && sound.currentTime > 0 && !sound.ended) {
+                            return; 
+                        }
+                        sound.play();
+                    };
+
+                }
+            });
+            let remaining = 0
+            socket.on("question_timer", (data) => {
+
+                remaining = data.remaining;
+
+                document.getElementById("15sAdd").onclick = () => {
+                    remaining += 15;
+                    socket.emit("add_15_sec", { code: code }) 
+                }
+
+                const timerDiv = document.getElementById('timer');
+                const timerText = document.getElementById("timerText");
+                timerText.textContent = `${remaining}`;
+
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                }
+
+                if (remaining > 0) {
+                    timerInterval = setInterval(() => {
+                        if (remaining > 0) {
+                            remaining--;
+                            timerText.textContent = remaining;
+                        } else {
+                            clearInterval(timerInterval);
+                        }
+                    }, 1000);
+                }
+            });
+            
+            socket.on("quiz_start_teacher", (data) => {
+                const checkMarks = document.getElementsByClassName('check_mark');
+                if (checkMarks.length) {
+                    const checkMarksArray = Array.from(checkMarks);
+                    
+                    checkMarksArray.forEach(mark => {
+                        mark.remove();
+                    });
+                }  
+
+                document.querySelector(".bottom-box").style.display = "flex";
+                const container = document.getElementById("resultsContainer");
+                container.innerHTML = "";
+                container.classList.add("hide")
+                nextBtn?.remove();
+                div.innerHTML = '';
+                
+                document.getElementById("room")?.remove();
+
+                const questionDiv = document.createElement('div');
+                questionDiv.id = 'question';
+                const answersDiv = document.createElement("div")
+                answersDiv.id = 'answerDiv'
+                if (data.image) {
+                    questionDiv.innerHTML = `
+                        <img id="questionImage" src="/library/images/${data.image}" class="q-image">
+                        <h2>${data.name}</h2>
+                    `;
+                }
+                else {
+                    questionDiv.innerHTML = `
+                        <h2>${data.name}</h2>
+                    `;
+                }
+                questionDiv.innerHTML += `
+                    <p class="numberQuestion">${data.current_question} / {{quiz.questions|length}}</p>
+                `
+                if (data.type != "enter answer") {
+                    data.variants.forEach((variant, index) => {
+                        answersDiv.innerHTML += `
+                            <div class="answerv">
+                                <div class="number">
+                                    <p class="numberText">${index + 1}</p>
+                                </div>
+                                <p class="answervText">
+                                    ${variant.text}
+                                </p>
+                            </div>
+                        `;
+                    })
+                }
+                div.appendChild(questionDiv);
+                if (data.image) {
+                    const qImage = document.getElementById('questionImage');
+                    qImage.addEventListener('click', () => {
+                        const img = document.getElementById('modalImageContent');
+                        img.src = qImage.src;
+                        const modal = document.getElementById('modalImage');
+                        modal.classList.remove('hidemodal');
+                        Wblur.classList.remove('hideblur');
+                    });
+                    const closeModalBtn = document.getElementById('closeModal');
+                    closeModalBtn.addEventListener('click', () => {
+                        const modal = document.getElementById('modalImage');
+                        modal.classList.add('hidemodal');
+                        Wblur.classList.add('hideblur');
+                    });
+                    Wblur.addEventListener('click', () => {
+                        const modal = document.getElementById('modalImage');
+                        modal.classList.add('hidemodal');
+                        Wblur.classList.add('hideblur');
+                    });
+                }
+                div.appendChild(answersDiv)
+                nextBtn.onclick = () => socket.emit("end_question", { code: code });
+                document.getElementById("timeControl").appendChild(nextBtn);
+
+            })
+            socket.on("student_answer", (data) => {
+                const user = document.getElementById(data.hash).querySelector("div")
+                const checkMark = document.createElement('img') 
+                checkMark.src = '{{ url_for("host_app.static", filename = "images/check-mark.svg") }}'
+                checkMark.classList.add('check_mark')
+                user.appendChild(checkMark)
+            })
+            socket.on("show_finish_button", data => {
+                if (nextBtn) {
+                    nextBtn.remove();
+                }
+                const endBtn = document.createElement('button');
+                endBtn.textContent = `Завершити вікторину`;
+                endBtn.style.color = 'black';
+                endBtn.onclick = () => socket.emit("quiz_end_msg", { code: code });
+                document.body.appendChild(endBtn);
+            });
+            socket.on("end_msg", data => {
+                nextBtn.querySelector("div").innerHTML = `<img src="{{ url_for('host_app.static', filename= 'gifs/loading.gif') }}" style="height: 20px; width: 20px;">`
+                setTimeout(()=> {
+                    socket.emit("show_quiz_results", {code: code})
+                }, 50)
+            }) 
+            socket.on("quiz_results", data => {
+                if (data.url) {
+                    window.location.href = `${data.url}`;
+                }
+            });
+        </script>
+        <script src="{{ url_for('host_app.static', filename='js/copy.js') }}"></script>
+    </body>
+</html>

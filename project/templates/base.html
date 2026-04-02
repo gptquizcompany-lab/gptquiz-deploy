@@ -1,0 +1,35 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}  {% endblock %} | GPTQuiz</title>
+        {% block head %}  {% endblock %}
+        <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/atom.svg') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/fonts.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/base.css') }}">
+    </head>
+    <body>
+        <header class="without-auth">
+            <a href="/" class="logo-title">
+                <img src="{{ url_for('static', filename= 'images/atom.svg') }}">
+                <h1>GPTQuiz</h1>
+            </a>
+            {% if not ignore_links %}
+                <div class="links">
+                    <a href="/execution/" class="enter-code"></a>
+                    <a href="/login/" class="login">Увійти</a>
+                    <a href="/signup/" class="signin">Зареєструватися</a>
+                </div> 
+            {% else %}
+                <div class="links">
+                    <a href="/execution/" class="enter-code"></a>
+                    <a href="/" class="login">Додому</a>
+                </div>
+            {% endif %}
+        </header>
+        
+        {% block content %}
+        
+        {% endblock %}
+    </body>
+</html>

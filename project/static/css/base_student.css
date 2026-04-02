@@ -1,0 +1,346 @@
+@font-face {
+	font-family: Inter;
+	src: url(../fonts/Inter_28pt-Medium.ttf) format("truetype");
+	font-weight: 500;
+}
+@font-face {
+	font-family: Inter;
+	src: url(../fonts/Inter_28pt-Bold.ttf) format("truetype");
+	font-weight: 600;
+}
+@font-face {
+	font-family: Inter;
+	src: url(../fonts/Inter_28pt-Regular.ttf) format("truetype");
+	font-weight: 300;
+}
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: Inter, sans-serif;
+}
+body {
+	background-color: #2b2b2b;
+}
+
+aside {
+	position: fixed;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: start;
+	padding: 10px 20px;
+	width: 220px;
+	height: 100%;
+	background-color: #383838;
+	gap: 25px;
+	z-index: 13;
+}
+aside img {
+	width: 40px;
+	height: 40px;
+}
+.title-logo {
+	color: white;
+	font-family: "inter";
+	font-weight: 600;
+	font-size: 26px;
+	text-decoration: none;
+	margin-top: 5px;
+	display: flex;
+	align-items: center;
+}
+
+h1 {
+	color: white;
+	font-family: "inter";
+	font-size: 24px;
+}
+
+.links {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	gap: 15px;
+}
+.tab-link {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	color: white;
+	font-family: "Inter";
+	font-size: 18px;
+	width: 100%;
+	gap: 10px;
+	text-decoration: none;
+	-webkit-user-drag: none;
+	position: relative;
+}
+.tab-link-content {
+	display: flex;
+	justify-content: left;
+	width: 100%;
+	align-items: center;
+	gap: 5px;
+}
+.tab-link-content p {
+	white-space: nowrap;
+}
+
+.divider {
+	width: 0;
+	height: 3px;
+	background-color: whitesmoke;
+	border-radius: 10px;
+	opacity: 0;
+	transition: all 0.2s ease;
+}
+
+.tab-link:hover .divider {
+	opacity: 1;
+	width: 100%;
+	animation: pulse 1s infinite ease-in-out 0.5s;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(100%);
+	}
+	50% {
+		transform: scale(95%);
+	}
+	100% {
+		transform: scale(100%);
+	}
+}
+
+.bottom-aside {
+	position: absolute;
+	left: 15px;
+	bottom: 15px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+.bottom-aside p {
+	color: white;
+	font-size: 14px;
+	opacity: 0.6;
+}
+
+.nav {
+	width: 100%;
+	height: 60px;
+	position: fixed;
+	right: 0;
+	background-color: #333333;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding-right: 15px;
+	padding-left: 300px;
+	gap: 20px;
+	z-index: 12;
+}
+.secondNav {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+.firstNav h2 {
+	font-family: "Inter";
+	font-size: 20px;
+	color: white;
+}
+.firstNav {
+	position: relative;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+.backContainer {
+	position: absolute;
+	left: -60px;
+	width: 40px;
+	height: 40px;
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+.backContainer img {
+	width: 100%;
+	height: 100%;
+}
+#username {
+	color: #ffffff;
+	font-size: 18px;
+	text-decoration: none;
+}
+.main {
+	position: relative;
+	left: 220px;
+	top: 60px;
+	width: calc(100% - 220px);
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 20px;
+}
+#burgerMenuBtn {
+	display: none;
+	width: 40px;
+	height: 40px;
+	background-color: #1b1b1b;
+	border: none;
+	border-radius: 10px;
+	padding: 4px;
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+}
+#burgerMenuBtn img {
+	height: 100%;
+}
+.enter-code {
+	height: 40px;
+	width: fit-content;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 10px 15px;
+	border: solid white 1px;
+	border-radius: 5px;
+	text-decoration: none;
+	color: white;
+	white-space: nowrap;
+	transition: 0.2s background-color ease;
+}
+.enter-code:hover {
+	background-color: #2b2b2b;
+}
+#asideEnterCode {
+	display: none;
+}
+#blurrr {
+	position: fixed;
+	display: block;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.35);
+	backdrop-filter: blur(2.5px);
+	z-index: 3;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.3s ease;
+}
+@media screen and (max-width: 980px) {
+	aside {
+		transition: all 0.3s ease-in-out;
+		width: 80px;
+		overflow: hidden;
+	}
+	aside.opened {
+		width: 220px;
+	}
+	.title-logo h1 {
+		display: none;
+	}
+	.title-logo {
+		gap: 10px;
+	}
+	aside.opened .title-logo h1 {
+		display: block;
+	}
+	.tab-link-content {
+		gap: 10px;
+	}
+	.tab-link-content p {
+		display: none;
+	}
+	aside.opened .tab-link-content p {
+		display: block;
+	}
+	aside.opened .bottom-aside {
+		display: block;
+		white-space: nowrap;
+	}
+	.bottom-aside {
+		display: none;
+	}
+	.main {
+		left: 80px;
+		width: calc(100% - 80px);
+	}
+	.nav {
+		padding-left: 120px;
+	}
+	#burgerMenuBtn {
+		display: flex;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	aside {
+		transition: all 0.3s ease-in-out;
+		transform: translateX(-80px);
+		overflow: hidden;
+	}
+	aside.opened {
+		transform: translateX(0);
+		width: 220px;
+	}
+	.main {
+		left: 0;
+		width: 100%;
+		gap: 16px;
+		padding: 15px;
+	}
+	.nav {
+		padding-left: 20px;
+	}
+	.name-page {
+		font-size: 18px !important;
+	}
+	.extended-name {
+		display: none;
+	}
+	.secondNav {
+		gap: 10px;
+	}
+	#username {
+		font-size: 16px;
+		white-space: nowrap;
+	}
+	#headerEnterCode {
+		display: none;
+	}
+	#asideEnterCode {
+		display: flex;
+		border: 1.5px #ffffff solid;
+		background-color: #2b2b2b;
+	}
+	#asideEnterCode p {
+		font-size: 18px;
+		opacity: 0;
+		visibility: hidden;
+		transition: 0.2s all ease;
+	}
+	aside.opened #asideEnterCode p {
+		opacity: 1;
+		visibility: visible;
+	}
+	.enter-code {
+		width: 100%;
+	}
+	.charts-grid {
+		padding: 20px 0px !important;
+	}
+	#blurrr.opened {
+		opacity: 1;
+		visibility: visible;
+	}
+}

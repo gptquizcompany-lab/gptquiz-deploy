@@ -1,0 +1,108 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+    {{ course.name }} ({{ course.classroom.number }}-{{course.classroom.char}})
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('classroom_app.static', filename= 'css/class.css') }}">
+{% endblock %}
+
+{% block name_page %}
+    {{ course.name }} ({{ course.classroom.number }}-{{course.classroom.char}})
+{% endblock %}
+
+{% block content %}
+<input type="hidden" id="courseId" value="{{ course.id }}">
+<div>
+</div>
+<div class="table">
+    <div class="header-classroom">
+        <div class="tabs">
+            <button class="tab selected" id="students" data-tab="students">Учні</button>
+            <button class="tab not" id="graphic" data-tab="graphic">Успішність</button>
+            <button class="tab not" id="history" data-tab="history">Історія</button>
+            <div class="addnewclass">
+                <button id="add" data-label="addStudent">Додати нового учня</button>
+            </div>
+        </div>
+    </div>
+    <div class="students tab-content" data-content="students">
+        <div class="header-students">
+            <div class="header-start">
+                <div class="number">
+                    <h3>№</h3>
+                </div>
+                <div>
+                    <h3>Призвіще Ім'я</h3>
+                </div>
+            </div>
+            <div>
+
+            </div>
+        </div>
+        <div class="content">
+            {% for student in course.students %}
+                <div class="studentContainer">
+                    <div class="student-start">
+                        <div class="number">
+                            <h3>{{ loop.index }}</h3>
+                        </div>
+                        <a href="/classrooms/student/{{ student.id }}">
+                            <h3 class="student">{{ student.surname }} {{ student.name }}</h3>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="chart-container tab-content hide" data-content="graphic">
+        <h3>Успішність курсу за період</h3>
+        <div class="controls-container">
+            <input type="date" id="start_date" class="date-input">
+            <p>—</p>
+            <input type="date" id="end_date" class="date-input">
+            <button onclick="updateCharts()" class="update-btn">Оновити дані</button>
+        </div>
+        <div class="chart-card">
+            <div id="successfulRate"></div>
+        </div>
+
+        <input type="hidden" id="course_id" value="{{ course.id }}">
+    </div>
+    <div class="tab-content hide" data-content="history">
+        <h1>Історія</h1>
+        <p>Тут буде історія проходження вікторин учнями курсу</p>
+    </div>
+</div>
+{% endblock %}
+    
+{% block modals %}
+<form id="form" class="create-form {% if not errors %}hideform{% endif %}" method="post" data-content="addStudent">
+    <button type="button" id="close" class="close"><img src="{{ url_for('classroom_app.static', filename='images/cross.svg') }}"></button>
+    <p>Додайте нового учня</p>
+    <div>
+        <label for="surname">Оберіть учня класу:</label>
+        <select id="surname" name="student_id" required>
+            <option value="" selected disabled>Обрати</option>
+            {% for student in course.classroom.students %}
+                {% if student not in course.students %}
+                    <option value="{{ student.id }}">{{ student.surname }} {{ student.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    {% if errors %}
+        <h3 id="errors">{{ errors }}</h3>
+    {% endif %}
+    <button type="submit" class="submit">Додати учня</button>
+</form>
+<div class="blur {% if not errors %}hideform{% endif %}" id="blur"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename= 'js/ApexCharts.js') }}"></script>
+    <script src="{{ url_for('classroom_app.static', filename='js/form.js') }}"></script>
+    <script src="{{ url_for('classroom_app.static', filename='js/courseCharts.js') }}"></script>
+    <script src="{{ url_for('classroom_app.static', filename='js/switch.js') }}"></script>
+{% endblock %}

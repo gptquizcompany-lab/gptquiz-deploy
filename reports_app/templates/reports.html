@@ -1,0 +1,57 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+    Звіти
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('reports_app.static', filename= 'css/reports.css') }}">
+{% endblock %}
+
+{% block name_page %}
+Звіти вікторин
+{% endblock %}
+
+{% block content %}
+<div class="reports-main">
+    <div class="reports-info">
+        <div class="titles">
+            <div></div>
+            <h3>Код</h3>
+            <h3>Назва тесту</h3>
+            <div class="titlessub">
+                <h3 id="successful">Успішність</h3>
+                <h3 id="passed">Пройшло</h3>
+                <h3 id="date">Дата</h3>
+            </div>
+        </div>
+        <div class="reports">
+            {% for room in rooms %}
+                <a href="/report/{{ room.id }}" class="report">
+                    <img src="{{ url_for('library_app.static', filename=room.roomsQuiz.image) }}" alt="">
+                    <h3 id="code">({{ room.redeem_codes[0].code_enter }})</h3>
+                    <h3 id="name">{{ room.roomsQuiz.name }}</h3>
+                    <div class="infoRoom">
+                        <div id="rate">
+                            {{ room.success_rate }}%
+                        </div>
+                        <div id="students">
+                            {{ room.student_reports|length }}
+                        </div>
+                        <p id="date1">{{ room.date.strftime('%d.%m.%Y') if room.date else '' }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% if archive %}
+    <a href="/reports/" class="archive-btn">
+        <img src="{{ url_for('reports_app.static', filename='images/back.svg') }}">
+    </a>
+{% else %}
+    <a href="/reports/archive/" class="archive-btn">
+        <img src="{{ url_for('reports_app.static', filename='images/archive.svg') }}">
+    </a>
+{% endif %}
+{% endblock %}

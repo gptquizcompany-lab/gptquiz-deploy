@@ -1,0 +1,186 @@
+.welcome {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: calc(0.520833334vw + 0.961538462vh);
+    padding-top: calc(1.1718750015vw + 2.1634615395vh);
+}
+
+.welcome-text {
+    color: white;
+    font-family: "inter";
+    font-size: calc(0.9114583345vw + 1.6826923085vh);
+    font-weight: 300;
+}
+
+h2 > a, span {
+    color: #B479ED;
+    -webkit-user-drag: none;
+    text-decoration: none;
+}
+
+h2 > a:hover {
+    text-decoration: underline;
+}
+
+.quote {
+    color: white;
+    font-family: "inter";
+    font-size: calc(1.5624999999vw + 2.884615386vh);
+    width: calc(20.83333336vw + 38.46153848vh);
+    height: calc(4.166666672vw + 7.692307696vh);
+    text-align: center;
+    line-height: calc(2.34375vw + 4.326923079vh);
+}
+
+.line {
+    background-color: white;
+    height: calc(0.0520833334vw + 0.0961538462vh);
+    width: calc(23.43750003vw + 43.26923079vh);
+    margin: calc(0.6510416675vw + 1.2019230775vh);
+}
+.quiz > div {
+    background-color: white;
+    width: 100%;
+    height: 1px;
+}
+
+.welcome-information {
+    color: white;
+    font-family: 'inter';
+    font-size: calc(0.7291666676vw + 1.3461538468vh);
+    font-weight: 300;
+    text-align: center;
+}
+
+#name {
+    font-family: Inter;
+    font-weight: 500;
+}
+
+.block-quizes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    gap: calc(0.260416667vw + 0.480769231vh);
+    padding: calc(0.520833334vw + 0.961538462vh);
+    color: white;
+    width: 100%;
+}
+
+.quizes {
+    position: relative;
+    padding: calc(0.3906250005vw + 0.7211538465vh);
+    background-color: #212121;
+    border-radius: calc(0.3906250005vw + 0.7211538465vh);
+    width: calc(100% - 20vw);
+}
+
+.quizes > div {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: calc(0.260416667vw + 0.480769231vh);
+}
+
+.quizes > div::-webkit-scrollbar {
+    background-color: #212121;
+}
+
+.quizes > div::-webkit-scrollbar-thumb {
+    background-color: #3d3d3d;
+    border: calc(0.15625vw + 0.288461539vh) solid #212121;
+    border-radius: calc(0.260416667vw + 0.480769231vh);
+}
+
+.quizes > div::-webkit-scrollbar-thumb:hover {
+    border-width: calc(0.1041666668vw + 0.1923076924vh);
+}
+
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    background-size: calc(0.9114583345vw + 1.6826923085vh);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #212121;
+    width: calc(1.302083335vw + 2.403846155vh);
+    height: calc(1.302083335vw + 2.403846155vh);
+    box-shadow: 0 calc(0.260416667vw + 0.480769231vh) calc(0.260416667vw + 0.480769231vh) rgba(0, 0, 0, 0.4);
+    border: none;
+    border-radius: 100px;
+    transform: translateY(-50%);
+    transition: all 0.3s;
+    z-index: 1;
+}
+
+.scroll-btn:hover {
+    width: calc(1.40625vw + 2.5961539694vh);
+    height: calc(1.40625vw + 2.5961539694vh);
+}
+
+.scroll-left-btn {
+    background-image: url(../images/left.svg);
+    left: calc(0.78125vw + 1.442307693vh);
+    cursor: e-resize;
+}
+
+.scroll-right-btn {
+    background-image: url(../images/right.svg);
+    right: calc(0.78125vw + 1.442307693vh);
+    cursor: w-resize;
+}
+
+.quiz {
+    display: flex;
+    flex-direction: column;
+    gap: calc(0.260416667vw + 0.480769231vh);
+    padding: calc(0.260416667vw + 0.480769231vh);
+    min-width: calc(7.81250001vw + 14.42307693vh);
+    height: calc(9.114583345vw + 16.826923085vh);
+    background-color: #3d3d3d;
+    border-radius: calc(0.260416667vw + 0.480769231vh);
+    font-family: Inter;
+    text-decoration: none;
+    color: white;
+}
+
+.description {
+    height: calc(4.687500006vw + 8.653846158vh);
+}
+
+.quiz p {
+    font-size: calc(0.35vw + 0.8vh);
+    font-weight: 300;
+}
+
+h3 {
+    font-size: calc(0.5729166674vw + 1.0576923082vh);
+    font-weight: 300;
+}
+
+h4 {
+    font-size: calc(0.46875vw + 0.8653846158vh);
+    font-weight: 300;
+    opacity: 0.8;
+}
+
+.quiz img {
+    width: 100%;
+    height: calc(3.125vw + 5.769230772vh);
+    object-fit: cover;
+    border-radius: calc(0.260416667vw + 0.480769231vh);
+}
+.block-quizes h2 {
+    font-size: calc(0.8vw + 0.8vh);
+}
+@media screen and (max-width: 600px) {
+    .line {
+        width: 100vw;
+    }
+    .quizes {
+        width: 100%;
+    }
+}

@@ -1,0 +1,41 @@
+{% extends 'base_student.html' %}
+
+{% block title %}
+    Моя статистика
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('student_app.static', filename= 'css/student_statistic.css') }}">
+{% endblock %}
+
+{% block name_page %}
+    Статистика
+{% endblock %}
+
+{% block content %}
+<div class="stats">
+    <h1>Твої загальні результати:</h1>
+
+    <div class="charts-grid">
+        <div class="chart-card">
+            <h3>Твій прогрес</h3>
+            <div id="lineChart"></div>
+        </div>
+        <div class="chart-card">
+            <h3>Статистика оцінок</h3>
+            <div id="pieChart"></div>
+        </div>
+    </div>
+
+    <div class="controls-container">
+        <input type="date" id="start_date" class="date-input">
+        <p>—</p>
+        <input type="date" id="end_date" class="date-input">
+        <button onclick="updateCharts()" class="update-btn">Оновити дані</button>
+    </div>
+
+    <input type="hidden" id="student_id" value="{{ current_user.id }}">
+</div>
+
+<script src="{{ url_for('student_app.static', filename='js/main_charts.js')}}"></script>
+{% endblock %}

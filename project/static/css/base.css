@@ -1,0 +1,184 @@
+@font-face {
+	font-family: Inter;
+	src: url(../fonts/Inter_28pt-Medium.ttf) format("truetype");
+	font-weight: 500;
+}
+@font-face {
+	font-family: Inter;
+	src: url(../fonts/Inter_28pt-Bold.ttf) format("truetype");
+	font-weight: 600;
+}
+@font-face {
+	font-family: Inter;
+	src: url(../fonts/Inter_28pt-Regular.ttf) format("truetype");
+	font-weight: 300;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: Inter, sans-serif;
+	text-decoration: none;
+}
+
+body {
+	width: 100vw;
+	background: #2b2b2b;
+}
+
+body::-webkit-scrollbar {
+	background-color: #2b2b2b;
+}
+
+body::-webkit-scrollbar-thumb {
+	background-color: #121212;
+	border: solid calc(0.1302083335vw + 0.2403846155vh);
+	border-radius: calc(0.260416667vw + 0.480769231vh);
+}
+
+body::-webkit-scrollbar-thumb:hover {
+	border-width: calc(0.09114583345vw + 0.16826923085vh);
+}
+
+button,
+a {
+	-webkit-tap-highlight-color: transparent;
+}
+
+textarea:focus,
+input:focus {
+	transition: all 0.2s ease-in-out;
+	outline: solid #b26fff calc(0.0260416667vw + 0.0480769231vh);
+}
+
+.without-auth {
+	width: 100%;
+	height: calc(2.083333336vw + 3.846153848vh);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: linear-gradient(55deg, #363636, #262626);
+	box-shadow: 0 calc(0.260416667vw + 0.480769231vh)
+		calc(0.390625vw + 0.7211538465vh) rgba(0, 0, 0, 0.5);
+	padding-right: calc(5.20833334vw + 9.61538462vh);
+	padding-left: calc(5.20833334vw + 9.61538462vh);
+}
+
+.logo-title {
+	height: 100%;
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	text-decoration: none;
+}
+
+.logo-title img {
+	width: calc(1.6927083355vw + 3.125vh);
+	height: calc(1.6927083355vw + 3.125vh);
+}
+
+.logo-title h1 {
+	font-size: calc(0.78125vw + 1.442307693vh);
+	color: white;
+}
+
+.links {
+	height: 100%;
+	display: flex;
+	justify-content: end;
+	align-items: center;
+	gap: calc(0.520833334vw + 0.961538462vh);
+}
+
+.links a {
+	font-size: calc(0.520833334vw + 0.961538462vh);
+	font-weight: 300;
+	color: white;
+	text-decoration: none;
+}
+
+.enter-code {
+	height: calc(1.1718750015vw + 2.1634615395vh);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: calc(0.260416667vw + 0.480769231vh)
+		calc(0.520833334vw + 0.961538462vh);
+	border: solid white calc(0.0260416667vw + 0.0480769231vh);
+	border-radius: calc(0.260416667vw + 0.480769231vh);
+}
+.enter-code::after {
+	content: "Введіть код";
+}
+
+.login {
+	height: calc(1.1718750015vw + 2.1634615395vh);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: calc(0.260416667vw + 0.480769231vh)
+		calc(0.520833334vw + 0.961538462vh);
+	background-color: #454545;
+	border-radius: calc(0.260416667vw + 0.480769231vh);
+}
+
+.signin {
+	height: calc(1.1718750015vw + 2.1634615395vh);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: calc(0.260416667vw + 0.480769231vh)
+		calc(0.520833334vw + 0.961538462vh);
+	background-color: #8854c3;
+	border-radius: calc(0.260416667vw + 0.480769231vh);
+}
+
+@media screen and (max-width: 600px) {
+	.without-auth {
+		height: 70px;
+		padding-left: 15px !important;
+		padding-right: 15px !important;
+		justify-content: space-between;
+		gap: 10px;
+		box-shadow: none;
+	}
+
+	.main-info {
+		height: auto;
+	}
+
+	.logo-title img {
+		width: 50px;
+		height: 50px;
+	}
+
+	.logo-title h1 {
+		font-size: 22px;
+	}
+
+	.links {
+		gap: 10px;
+	}
+
+	.links a {
+		font-size: 18px;
+	}
+
+	.enter-code,
+	.login {
+		height: auto;
+		padding: 7px 15px;
+		font-size: 16px;
+		border-radius: 6px;
+	}
+	.enter-code::after {
+		content: "Код";
+	}
+	.signin {
+		display: none;
+	}
+	.enter-code {
+		border-width: 1px;
+	}
+}

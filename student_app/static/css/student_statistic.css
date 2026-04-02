@@ -1,0 +1,77 @@
+.stats {
+	display: flex;
+	flex-direction: column;
+}
+.stats h1 {
+	text-align: center;
+	color: white;
+	font-size: 20px;
+}
+
+.controls-container {
+	margin-bottom: 20px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	justify-content: center;
+	align-items: center;
+}
+
+.controls-container p {
+	color: white;
+}
+
+.date-input {
+	padding: 10px;
+	border-radius: 8px;
+	border: 1px solid #ddd;
+	outline: none;
+	transition: border 0.3s;
+}
+
+.date-input:focus {
+	border-color: #008ffb;
+}
+
+.update-btn {
+	padding: 10px 25px;
+	cursor: pointer;
+	background: #008ffb;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	font-weight: bold;
+	transition: opacity 0.2s;
+}
+
+.update-btn:hover {
+	opacity: 0.8;
+}
+
+.charts-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 25px;
+	padding: 20px;
+}
+
+.chart-card {
+	background: #212121;
+	padding: 20px;
+	border-radius: 15px;
+}
+
+.chart-card h3 {
+	text-align: center;
+	color: #ecdcdc;
+	margin-bottom: 15px;
+	font-size: 1.2rem;
+}
+
+@media (max-width: 900px) {
+	.charts-grid {
+		grid-template-columns: 1fr;
+		gap: 25px;
+		padding: 10px;
+	}
+}

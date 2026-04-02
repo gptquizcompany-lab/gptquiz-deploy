@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Упс! Сторінка не найдена!
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('home_app.static', filename= 'css/404.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="not-found-container">
+        <div class="headers">
+            <h1 id="h14">4</h1>
+            <h1 id="h10">0</h1>
+            <h1 id="h24">4</h1>
+        </div>
+        <div class="main">
+            <h3>Упс! Сторінку не знайдено...</h3>
+            <a href="/">На головну</a>
+        </div>
+    </div>
+{% endblock %}

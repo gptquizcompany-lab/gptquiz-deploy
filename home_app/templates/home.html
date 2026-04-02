@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Головна
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('home_app.static', filename= 'css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="welcome">
+        <p class="welcome-text">Представляємо вам <span>Освітницький комплекс</span></p>
+        <div class="line"></div>
+        <h2 class="welcome-information"><span id="name">GPTQuiz</span> - твій зручний помічний у навчанні та роботі,<br> це платформа для <a href="/create-quiz/">створення</a>, <a href="/execution/">проходження</a> <br> та <span>аналізу </span>вікторин</h2>
+    </div>
+    <br>
+    <div class="block-quizes">
+        <h2>Популярні вікторини</h2>
+        <div class="quizes">
+            <button class="scroll-btn scroll-left-btn"></button>
+            <div>
+                {% for quiz in quizes %}
+                    <a href="/host/{{ quiz.id }}" class="quiz">
+                        <img src="{{ url_for('library_app.static', filename= quiz.image) }}" alt="">
+                        <h3>{{ quiz.name[:24] + "..." if quiz.name|length > 20 else quiz.name }}</h3>
+                        <h4>Aвтор: {{ quiz.user.surname }} {{ quiz.user.name }}</h4>
+                        <p class="description">Опис: {{ quiz.description }}</p>
+                        <div></div>
+                        <p>{{ quiz.count_questions }} запитань</p>
+                        <div></div>
+                        <p>{{ quiz.codes|length }} переглядів</p>
+                    </a>
+                {% endfor %}
+            </div>
+            <button class="scroll-btn scroll-right-btn"></button>
+        </div>
+    </div>
+{% endblock %}
+    
+{% block scripts %}
+    <script src="{{ url_for('home_app.static', filename='js/description.js') }}"></script>
+    <script src="{{ url_for('home_app.static', filename='js/scroll.js') }}"></script>
+{% endblock %}

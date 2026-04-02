@@ -1,0 +1,320 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Створення вікторини | GPTQuiz</title>
+        <link rel="stylesheet" href="{{ url_for('library_app.static', filename= 'css/create_quiz.css') }}">
+    </head>
+    <body>
+        <header>
+            <div>
+                <a href="/library/" title="Вийти"><img src="{{ url_for('library_app.static', filename= 'images/arrow.svg') }}"></a>
+                <p>Створення нової вікторини</p>
+            </div>
+            <div class="header-buttons">
+                <button type="button" id="Delete"><p>Очистити вікторину</p><img src="{{ url_for('library_app.static', filename= 'images/bin.svg') }}"></button>
+                <button type="button" id="SaveAndExit"><p>Опублiкувати</p><img src="{{ url_for('library_app.static', filename= 'images/public.svg') }}"></button>
+            </div>
+        </header>
+        <main>
+            <div class="sidebar">
+                {% if not questions %}
+                    <p>Почати з ...</p>
+                    <div class="slide">
+                        <img src="{{url_for('library_app.static', filename= 'images/plus.svg')}}" alt="">
+                        <h3>Виберіть тип запитання</h3>
+                    </div>
+                {% else %}
+                    <p>Створені запитання:</p>
+                {% endif %}
+                <form method="post" class="slides">
+                    {% for question in questions %}
+                        <button name="button" value="edit {{ question.id }}" class="slide">
+                            <h3>№{{ loop.index }}: {{question.name if question.name|length < 30 else question.name[:27] + "..."}}</h3>
+                            {% if edit_question and question.id == edit_question.id  %}
+                                <div class="slide-under"></div>
+                            {% endif %}
+                        </button>
+                    {% endfor %}
+                </form>
+            </div>
+            {% if not create_question %}
+                <div class = 'create-question'>
+                    <h2 class = 'welcome-create-text'>Знайдіть готові вікторини на вашу тему, створені іншими користувачами.</h2>
+                    <div class="search-line">
+                        <img src="{{ url_for('admin_app.static', filename= 'images/search.svg') }}">
+                        <input type="text" placeholder="Знайдіть будь-яку тему...">
+                        <button>
+                            <img src="{{ url_for('admin_app.static', filename= 'images/search_button.svg') }}">
+                        </button>
+                    </div>  
+
+                    <h2 class="choose-question">Або виберіть тип запитання, щоб створити запитання</h2>
+                    
+                    <form method="post" class ="type-questions">
+                        <button name="button" value="one_answer" type="submit" class = 'type-request'>
+                            <img src="{{ url_for('library_app.static', filename = 'images/oneAnswer.svg' )}}" alt="">
+                            <h3>Одна відповідь</h3>
+                        </button>
+                        <button name = 'button' value="multiple_answers" type="submit" class ="type-request" >
+                            <img src="{{ url_for('library_app.static', filename = 'images/multuple.svg' )}}" alt="">
+                            <h3>Декiлька відповідей</h3>
+                        </button>
+
+                        <button name='button' value="enter_answer" type="submit" class ="type-request" >
+                            <img src="{{ url_for('library_app.static', filename = 'images/enter.svg' )}}" alt="">
+                            <h3>Ввести відповідь</h3>
+                        </button>
+
+                    </form>
+                </div>
+            {% else %}
+            {% if edit_question %}
+            <form method="post" class = 'main-create-block' enctype="multipart/form-data">
+                <a href="/create-quiz/" class="backwood" title="Закрити"><img src="{{ url_for('library_app.static', filename = 'images/close.svg')}}" alt=""></a>
+                {% if edit_question.type == "one answer" %}
+                    <h1>Редагування запитання з однією відповіддю</h1>
+                {% elif edit_question.type == "enter answer" %}
+                    <h1>Редагування запитання з заповненням бланка</h1>
+                {% elif edit_question.type == "multiple answers" %}
+                    <h1>Редагування запитання з декількома відповіддями</h1>
+                {% endif %}
+                <div class="create-block">
+                    <textarea name = 'question' class = 'input-question'  placeholder="Введіть запитання...">{{ edit_question.name }}</textarea>
+                    <div class="answers-block">
+                        {% if edit_question.type == "one answer" %}
+                            <div class="answer-block1">
+                                <input 
+                                    type="radio" 
+                                    name="correct answer" 
+                                    class="correct-answer" 
+                                    id="correct1" value="1" 
+                                    {{ "checked" if edit_question.correct_answer|int == 1 else "" }}
+                                >
+                                <label class="correct-label" for="correct1">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name='answer1' class="block1" placeholder="Введіть варіант відповіді...">{{ edit_question.variant_1 }}</textarea>
+                            </div>
+                            <div class="answer-block2">
+                                <input 
+                                    type="radio" 
+                                    name="correct answer" 
+                                    class="correct-answer" 
+                                    id="correct2" value="2" 
+                                    {{ "checked" if edit_question.correct_answer|int == 2 else "" }}
+                                >
+                                <label class="correct-label"  for="correct2">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer2' class="block2" placeholder="Введіть варіант відповіді...">{{ edit_question.variant_2 }}</textarea>
+                            </div>
+                            <div class="answer-block3">
+                                <input 
+                                    type="radio" 
+                                    name="correct answer" 
+                                    class="correct-answer" 
+                                    id="correct3" value="3" 
+                                    {{ "checked" if edit_question.correct_answer|int == 3 else "" }}
+                                >
+                                <label class="correct-label"  for="correct3">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer3' class = 'block3' placeholder="Введіть варіант відповіді...">{{ edit_question.variant_3 }}</textarea>
+                            </div>
+                            <div class="answer-block4">
+                                <input 
+                                    type="radio" 
+                                    name="correct answer" 
+                                    class="correct-answer" 
+                                    id="correct4" value="4"
+                                    {{ "checked" if edit_question.correct_answer|int == 4 else "" }}
+                                >
+                                <label class="correct-label"  for="correct4">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name ='answer4' class="block4" placeholder="Введіть варіант відповіді...">{{ edit_question.variant_4 }}</textarea>
+                            </div>
+                        {% elif edit_question.type == "enter answer" %}
+                            <div class="enter-answer-div">
+                                <input type="text" class="enter-answer-input" name="answer1" id='enterAnswer' placeholder="введіть відповідь" value="{{ edit_question.variant_1 }}" id="">
+                            </div>
+                        {% elif edit_question.type == "multiple answers" %}
+                            <div class="answer-block1">
+                                <input type="checkbox" name="correct answer" class="correct-answer" id="correct1" value="1">
+                                <label class="correct-label" for="correct1">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer1' class="block1" placeholder="Введіть варіант відповіді...">{{ edit_question.variant_1 }}</textarea>
+                            </div>
+                            <div class="answer-block2">
+                                <input type="checkbox" name="correct answer" class="correct-answer" id="correct2" value="2">
+                                <label class="correct-label"  for="correct2">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer2' class="block2" placeholder="Введіть варіант відповіді...">{{ edit_question.variant_2 }}</textarea>
+                            </div>
+                            <div class="answer-block3">
+                                <input type="checkbox" name="correct answer" class="correct-answer" id="correct3" value="3">
+                                <label class="correct-label"  for="correct3">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer3' class = 'block3' placeholder="Введіть варіант відповіді...">{{ edit_question.variant_3 }}</textarea>
+                            </div>
+                            <div class="answer-block4">
+                                <input type="checkbox" name="correct answer" class="correct-answer" id="correct4" value="4">
+                                <label class="correct-label"  for="correct4">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea  name = 'answer4' class="block4" placeholder="Введіть варіант відповіді...">{{ edit_question.variant_4 }}</textarea>
+                            </div>
+                        {% endif %}
+                    </div>                    
+                </div>
+                <div class="div-button-save">
+                    <button name="button" class='button-save' id='buttonAnswer' value="editing {{ edit_question.id }}" type="submit" disabled>Зберегти</button>
+                </div>
+            </form>
+            {% else %}
+            <form action ='' method="post" class = 'main-create-block' enctype="multipart/form-data">
+                <a href="/create-quiz/" class="backwood" title="Закрити"><img src="{{ url_for('library_app.static', filename = 'images/close.svg')}}" alt=""></a>
+                {% if question == "One answer" %}
+                    <h1>Створення запитання з однією відповіддю</h1>
+                {% elif question == "Enter answer" %}
+                    <h1>Створення запитання з заповненням бланка</h1>
+                {% elif question == "multiple answers" %}
+                    <h1>Створення запитання з декількома відповіддями</h1>
+                {% endif %}
+                <div class="create-block">
+                    <textarea name = 'question' class = 'input-question'  placeholder="Введіть запитання..."></textarea>
+                    <label for="imageQuestion" class="label-for-image">
+                        <img src="{{ url_for('library_app.static', filename='images/upload.svg') }}" id="imageBtn">
+                    </label>
+                    <input type="file" name="image" id="imageQuestion" accept="image/*" style="display: none;">
+                    <div class="answers-block">
+                        {% if question == "One answer" %}
+                            <div class="answer-block1">
+                                <input type="radio" name="correct answer" class="correct-answer" id="correct1" value="1">
+                                <label class="correct-label" for="correct1">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer1' class="block1" placeholder="Введіть варіант відповіді..."></textarea>
+                            </div>
+                            
+                            <div class="answer-block2">
+                                <input type="radio" name="correct answer" class="correct-answer" id="correct2" value="2">
+                                <label class="correct-label"  for="correct2">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer2' class="block2" placeholder="Введіть варіант відповіді..."></textarea>
+                            </div>
+                            <div class="answer-block3">
+                                <input type="radio" name="correct answer" class="correct-answer" id="correct3" value="3">
+                                <label class="correct-label"  for="correct3">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer3' class = 'block3' placeholder="Введіть варіант відповіді..."></textarea>
+                            </div>
+                            <div class="answer-block4">
+                                <input type="radio" name="correct answer" class="correct-answer" id="correct4" value="4">
+                                <label class="correct-label"  for="correct4">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea  name = 'answer4' class="block4" placeholder="Введіть варіант відповіді..."></textarea>
+                            </div>
+                        {% elif question == "Enter answer" %}
+                            <div class="enter-answer-div">
+                                <input type="text" class="enter-answer-input" name="answer1" id='enterAnswer' placeholder="введіть відповідь" id="">
+                            </div>
+                        {% elif question == "multiple answers" %}
+                            <div class="answer-block1">
+                                <input type="checkbox" name="correct answer" class="correct-answer" id="correct1" value="1">
+                                <label class="correct-label" for="correct1">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer1' class="block1" placeholder="Введіть варіант відповіді..."></textarea>
+                            </div>
+                            <div class="answer-block2">
+                                <input type="checkbox" name="correct answer" class="correct-answer" id="correct2" value="2">
+                                <label class="correct-label"  for="correct2">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer2' class="block2" placeholder="Введіть варіант відповіді..."></textarea>
+                            </div>
+                            <div class="answer-block3">
+                                <input type="checkbox" name="correct answer" class="correct-answer" id="correct3" value="3">
+                                <label class="correct-label"  for="correct3">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea name = 'answer3' class = 'block3' placeholder="Введіть варіант відповіді..."></textarea>
+                            </div>
+                            <div class="answer-block4">
+                                <input type="checkbox" name="correct answer" class="correct-answer" id="correct4" value="4">
+                                <label class="correct-label"  for="correct4">
+                                    <img src="{{ url_for('library_app.static', filename = 'images/correct.png')}}">
+                                </label>
+                                <textarea  name = 'answer4' class="block4" placeholder="Введіть варіант відповіді..."></textarea>
+                            </div>
+                        {% endif %}
+                    </div>                    
+                </div>
+                {% if question == "One answer" %}
+                    <input type="hidden" value="one_answer" name = 'type_question'>
+                {% elif question == "Enter answer" %}
+                    <input type="hidden" value="enter_answer"  name = 'type_question'>
+                {% elif question == "multiple answers" %}
+                    <input type="hidden" value="multiple_answers" name = 'type_question'>
+                {% endif %}
+                <div class="div-button-save">
+                    <select name="time-limit">
+                        <option value="default" selected>60 Сек</option>
+                        <option value="custom1">80 сек</option>
+                        <option value="custom2">100 сек</option>
+                    </select>
+                    <button name="button" class = 'button-save' id = 'buttonAnswer' type="submit"  disabled>Створити та зберегти</button>
+                </div>
+            </form>
+            {% endif %}
+        {% endif %}
+        </main>
+        <input type="hidden" name="questions" value="{{ questions|length }}">
+        <div class="blur hideform" id="blur"></div>
+
+        <form method="post" id="saveForm" class="form hideform" enctype="multipart/form-data">
+            <h2>Опублiкувати вікторину</h2>
+            <label class="uploadLabel" id="uploadLabel" for="imageQuiz">
+                <div>
+                    <img src="{{ url_for('library_app.static', filename='images/upload.svg') }}">
+                </div>
+                <p><span>Завантажте</span> або перетягніть зображення</p>
+            </label>
+            <input type="file" name="image" id="imageQuiz" accept="image/*" style="display: none;">
+            <hr color="#696969">
+            <div class="form-inputs">
+                <label for="NameQuiz">Додайте назву:</label>
+                <input type="text" name="Name-Quiz" id="NameQuiz" placeholder="Назва вікторини" required>
+
+                <label for="DescriptionQuiz">Додайте опис:</label>
+                <textarea name="Description-Quiz" id="DescriptionQuiz" placeholder="Опис вікторини"></textarea>
+            </div>
+
+            <button type="submit" name="button" value="save_quiz">Зберегти</button>
+        </form>
+
+        <form method="post" id="deleteForm" class="form hideform">
+            <div class="header-form">
+                <h2>Ви дійсно хочете очистити вікторину?</h2>
+                <p class="extend-desc">Ця дія незворотня</p>
+            </div>
+
+            <div class="buttons-bottom">
+                <button type="button" id="closeBtn" class="close">Закрити</button>
+                <button type="submit" name="button" value="delete_quiz" class="submit">Очистити</button>
+            </div>
+        </form>
+
+        <script src="{{ url_for('library_app.static',filename= 'js/openCloseModal.js') }}"></script>
+        <script src="{{ url_for('library_app.static',filename= 'js/checkCorrect.js') }}"></script>
+        <script src="{{ url_for('library_app.static',filename= 'js/uploadImageQ.js') }}"></script>
+    </body>
+</html>

@@ -1,0 +1,99 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+    Мої класи
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('classroom_app.static', filename='css/classrooms.css') }}">
+{% endblock %}
+
+{% block name_page %}
+    Мої класи
+{% endblock %}
+
+{% block content %}
+    <div class="headerClassroom">
+        <h1>Ваші класи:</h1>
+        <div class="addnewclass">
+            <button id="add" data-label="classroom">Додайте новий клас!</button>
+        </div>
+    </div>
+    {% if class_groups %}
+        <div class="content">
+            {% for classroom in class_groups %}
+                <a class="classroom-link" href="/classrooms/{{ classroom.id }}">{{ classroom.number }}-{{ classroom.char }}</a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h2 class="no-classrooms-text">У вас поки що немає класів...</h2>
+    {% endif %}
+    <div class="headerClassroom">
+        <h1>Ваші курси:</h1>
+        <div class="addnewclass">
+            <button id="add" data-label="course">Додайте новий курс!</button>
+        </div>
+    </div>
+    {% if courses %}
+        <div class="content">
+            {% for course in courses %}
+                <a class="course" href="/classrooms/courses/{{ course.id }}">
+                    <h3>{{ course.name }}</h3>
+                    <div>
+                        <p><b>{{ course.classroom.number }}-{{ course.classroom.char }}</b></p>
+                        <p>{{ course.classroom.students|length }} учнів</p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h2 class="no-classrooms-text">У вас поки що немає курсів...</h2>
+    {% endif %}
+{% endblock %}
+
+{% block modals %}
+    <form method="post" id="formClassroom" class="create-form {% if not errors %}hideform{% endif %}" data-content="classroom">
+        <button type="button" id="close" class="close"><img src="{{ url_for('classroom_app.static', filename='images/cross.svg') }}"></button>
+        <p>Додати новий клас</p>
+        <div>
+            <label for="number">Число класу:</label>
+            <input type="number" id="number" name="number" max="11" required>
+        </div>
+        <div>
+            <label for="char">Літера класу:</label>
+            <input type="text" id="char" name="char" maxlength="1" required>
+        </div>
+        {% if errors %}
+            <h3>{{ errors }}</h3>
+        {% endif %}
+        <input type="hidden" name="form_type" value="classroom">
+        <button type="submit" class="submit">Додати</button>
+    </form>
+    <form method="post" id="formCourse" class="create-form hideform" data-content="course">
+        <button type="button" id="close" class="close"><img src="{{ url_for('classroom_app.static', filename='images/cross.svg') }}"></button>
+        <p>Додати курс</p>
+        <div>
+            <label for="name">Назва курсу:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+            <label for="classroom">Клас:</label>
+            <select id="classroom" name="classroom" required>
+                    <option value="" selected disabled>Обрати</option>
+                {% for classroom in class_groups %}
+                    <option value="{{ classroom.id }}">{{ classroom.number }}-{{ classroom.char }} ({{ classroom.students|length }} учнів)</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% if errors %}
+            <h3>{{ errors }}</h3>
+        {% endif %}
+        <input type="hidden" name="form_type" value="course">
+        <button type="submit" class="submit">Додати</button>
+    </form>
+    <div class="blur {% if not errors %}hideform{% endif %}" id="blur"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('classroom_app.static', filename='js/form.js') }}"></script>
+{% endblock %}

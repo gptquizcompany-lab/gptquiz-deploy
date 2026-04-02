@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Реєстрація
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('user_app.static', filename= 'css/signup.css') }}">
+{% endblock %}
+
+{% block content %}
+    <form method="post" id="form">
+        <h2>Реєстрація</h2>
+        <div class="inputs">
+            <div class="inputDiv" id="loginDiv">
+                <input type="text" id="login" name="login" class="login" autocomplete="off" placeholder="Логін *" required>
+                <ul id="loginErrors">
+
+                </ul>
+            </div>
+            <div class="inputDiv" id="nameDiv">
+                <input type="text" id="name" name="name" class="name" autocomplete="off" placeholder="Ваше ім`я *" required>
+                <ul id="nameErrors">
+
+                </ul>
+            </div>
+            <div class="inputDiv" id="surnameDiv">
+                <input type="text" id="surname" name="surname" class="surname" autocomplete="off" placeholder="Ваше прізвище *" required>
+                <ul id="surnameErrors">
+
+                </ul>
+            </div>
+            <div class="inputDiv" id="emailDiv">
+                <input type="email" id="email" name="email" class="email" autocomplete="off" placeholder="Ваша електронна адреса *" required>
+                <ul id="emailErrors">
+
+                </ul>
+            </div>
+            <div class="inputDiv" id="passwordDiv">
+                <input type="password" id="password" name="password" class="password" autocomplete="off" placeholder="Пароль *" required>
+                <ul id="passwordErrors">
+
+                </ul>
+            </div>
+            <div id="generalErrors"></div>
+        </div>
+        <div class="submit">
+            <button type="submit" id="submit">Зареєструватися</button>
+            <p>Вже маєте акаунт? <a href="/login/">Увійти</a></p>
+        </div>
+    </form>
+    <script src="{{ url_for('user_app.static', filename='js/jquery.js') }}"></script>
+    <script src="{{ url_for('user_app.static', filename='js/signup.js') }}"></script>
+{% endblock %}

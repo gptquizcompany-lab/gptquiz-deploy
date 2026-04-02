@@ -1,0 +1,108 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %} | GPTQuiz</title>
+        <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/atom.svg') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/fonts.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/base_admin.css') }}">
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <aside id="aside">
+            <a class="title-logo" href="/admin/">
+                <img src="{{ url_for('static', filename= 'images/atom.svg') }}">
+                <h1>GPTQuiz</h1>
+            </a>
+            <div id="asideButtons">
+                <form id="asideCreate" class="createForm" action="/get-draft/">
+                    <button type="submit" class="create-btn-ripple createQuiz">
+                        <img src="{{ url_for('static', filename='images/plus.svg') }}">
+                        <p>Створити</p>
+                    </button>
+                </form>
+                <a href="/execution/" class="enter-code" id="asideEnterCode">
+                    <p>Введіть код</p>
+                </a>
+            </div>
+            <div class="links">
+                <a class="tab-link" href="{{ url_for('classroom_app.render_classrooms') }}">
+                    <div class="tab-link-content">
+                        <img src="{{ url_for('static', filename= 'images/classroom.svg') }}">
+                        <p>Мої класи</p>
+                    </div>
+                    <div class="divider myClassLink"></div>
+                </a>
+                <a class="tab-link" href="{{ url_for('library_app.render_library') }}">
+                    <div class="tab-link-content">
+                        <img src="{{ url_for('static', filename= 'images/library.svg') }}">
+                        <p>Бібліотека</p>
+                    </div>
+                    <div class="divider libraryLink"></div>
+                </a>
+                <a class="tab-link" href="{{ url_for('reports_app.render_reports_page') }}">
+                    <div class="tab-link-content">
+                        <img src="{{ url_for('static', filename= 'images/reports.svg') }}">
+                        <p>Звіти</p>
+                    </div>
+                    <div class="divider reportsLink"></div>
+                </a>
+                <a class="tab-link" id="logoutAside" href="/logout/">
+                    <hr>
+                    <div class="tab-link-content">
+                        <img src="{{ url_for('admin_app.static', filename= 'images/logout.svg') }}">
+                        <p>Вийти</p>
+                    </div>
+                    <div class="divider logoutLink"></div>
+                </a>
+            </div>
+            <div class="bottom-aside">
+                <p>© 2026 GPTQuiz</p>
+                <p>Всі права захищені.</p>
+            </div>
+        </aside>
+        <div id="blurrr"></div>
+        <header class="nav">
+            <div class="firstNav">
+                {% if not main_page %}
+                    <button class="backContainer" onclick="goBack()">
+                        <img src="{{ url_for('static', filename= 'images/left-arrow.svg') }}">
+                    </button>
+                {% endif %}
+                <h2 class="name-page">{% block name_page %}{% endblock %}</h2>
+                <div>{% block extended_name %}{% endblock %}</div>
+            </div>
+            <div class="secondNav">
+                <form id="headerCreate" class="createForm" action="/get-draft/">
+                    <button type="submit" class="create-btn-ripple createQuiz">
+                        <img src="{{ url_for('static', filename='images/plus.svg') }}">
+                        <p>Створити</p>
+                    </button>
+                </form>
+                <a href="/execution/" id="headerEnterCode" class="enter-code">Введіть код</a>
+                <a href="/profile/" id="username">{{ current_user.surname + " " + current_user.name }}</a>
+                <a href="/logout/" class="logout">
+                    <img src="{{ url_for('admin_app.static', filename= 'images/logout.svg') }}">
+                </a>
+                <button id="burgerMenuBtn">
+                    <img src="{{ url_for('static', filename= 'images/menu.svg') }}">
+                </button>
+            </div>
+        </header>
+        <main class="main"> 
+            {% block content %}
+            
+            {% endblock %}
+        </main>
+        
+        {% block modals %}
+            
+        {% endblock %}
+        <script src="{{ url_for('static', filename= 'js/goBack.js') }}"></script>
+        <script src="{{ url_for('static', filename= 'js/openCloseBurgerMenu.js') }}"></script>
+        <script src="{{ url_for('static', filename= 'js/ripple.js') }}"></script>
+        {% block scripts %}
+            
+        {% endblock %}
+    </body>
+</html>

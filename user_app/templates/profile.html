@@ -1,0 +1,51 @@
+{% extends "base_admin.html" %}
+
+{% block title %}
+Профiль
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{url_for('user_app.static', filename = 'css/profile.css')}}">
+{% endblock %}
+
+{% block content %}
+    <div class="profile">
+        <h2>Ваш Профiль</h2>
+        <div class="profile-card">
+            <div class="avatar-username">
+                <div class="line"></div>
+                <img src="{{url_for('user_app.static', filename = 'images/profile.png')}}">
+                <div class="username">
+                    <h3>{{ user.name }} {{ user.surname }}</h3>
+                    <h4>{{ user.login }}</h4>
+                </div>
+            </div>
+            <div class="main-info">
+                <div>
+                    <p class="info">
+                        Iм'я
+                    </p>
+                    <p class="information">
+                        {{ user.name }}
+                    </p>
+                </div>
+                <div>
+                    <p class="info">
+                        Прiзвище
+                    </p>
+                    <p class="information">
+                        {{ user.surname }}
+                    </p>
+                </div>
+                <div>
+                    <p class="info">
+                        Ел. Пошта
+                    </p>
+                    <p class="information">
+                        {{ user.email }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

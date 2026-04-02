@@ -1,0 +1,115 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+    {{ classroom.number }}-{{classroom.char}}
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('classroom_app.static', filename= 'css/class.css') }}">
+{% endblock %}
+
+{% block name_page %}
+    {{ classroom.number }}-{{classroom.char}}
+{% endblock %}
+
+{% block content %}
+<input type="hidden" id="classroomId" value="{{ classroom.id }}">
+<div>
+</div>
+<div class="table">
+    <div class="header-classroom">
+        <div class="tabs">
+            <button class="tab selected" id="students" data-tab="students">Учні</button>
+            <button class="tab not" id="graphic" data-tab="graphic">Успішність</button>
+            <button class="tab not" id="history" data-tab="history">Історія</button>
+            <div class="addnewclass">
+                <button id="add" data-label="addStudent">Додати нового учня</button>
+            </div>
+        </div>
+        <div class="copy-container tab-content" data-content="students">
+            <p id="text-copy"></p>
+            <button id="copy-btn"><img id="img-copy" src="{{ url_for('host_app.static', filename='images/copy.svg') }}"></button>
+        </div>
+    </div>
+    <div class="students tab-content" data-content="students">
+        <div class="header-students">
+            <div class="header-start">
+                <div class="number">
+                    <h3>№</h3>
+                </div>
+                <div>
+                    <h3>Призвіще Ім'я</h3>
+                </div>
+            </div>
+            <div>
+
+            </div>
+        </div>
+        <div class="content">
+            {% for student in classroom.students %}
+                <div class="studentContainer">
+                    <div class="student-start">
+                        <div class="number">
+                            <h3>{{ loop.index }}</h3>
+                        </div>
+                        <a href="/classrooms/student/{{ student.id }}">
+                            <h3 class="student">{{ student.surname }} {{ student.name }}</h3>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="chart-container tab-content hide" data-content="graphic">
+        <h3>Успішність класу за період</h3>
+        <div class="controls-container">
+            <input type="date" id="start_date" class="date-input">
+            <p>—</p>
+            <input type="date" id="end_date" class="date-input">
+            <button onclick="updateCharts()" class="update-btn">Оновити дані</button>
+        </div>
+        <div class="chart-card">
+            <div id="successfulRate"></div>
+        </div>
+
+        <input type="hidden" id="classroom_id" value="{{ classroom.id }}">
+    </div>
+    <div class="tab-content hide" data-content="history">
+        <h1>Історія</h1>
+        <p>Тут буде історія проходження вікторин учнями класу</p>
+    </div>
+</div>
+{% endblock %}
+    
+{% block modals %}
+    <form id="form" class="create-form {% if not errors %}hideform{% endif %}" method="post" data-content="addStudent">
+        <button type="button" id="close" class="close"><img src="{{ url_for('classroom_app.static', filename='images/cross.svg') }}"></button>
+        <p>Додайте нового учня</p>
+        <div>
+            <label for="student_login">Придумайте логін учня:</label>
+            <input type="text" name="student_login" id="student_login" placeholder="Логін учня">
+        </div>
+        <div>
+            <label for="student_surname">Вкажіть прізвище учня:</label>
+            <input type="text" name="student_surname" id="student_surname" placeholder="Прізвище учня">
+        </div>
+        <div>
+            <label for="student_name">Вкажіть ім'я учня:</label>
+            <input type="text" name="student_name" id="student_name" placeholder="Ім'я учня">
+        </div>
+        {% if errors %}
+            <h3 id="errors">{{ errors }}</h3>
+        {% endif %}
+        <button type="submit" class="submit">Додати учня</button>
+    </form>
+    <div class="blur {% if not errors %}hideform{% endif %}" id="blur"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename= 'js/ApexCharts.js') }}"></script>
+    <script src="{{ url_for('classroom_app.static', filename='js/form.js') }}"></script>
+    <script src="{{ url_for('classroom_app.static', filename='js/classroomCharts.js') }}"></script>
+    <script src="{{ url_for('classroom_app.static', filename='js/switch.js') }}"></script>
+    <script src="{{ url_for('classroom_app.static', filename='js/getDataLogin.js') }}"></script>
+    <script src="{{ url_for('classroom_app.static', filename='js/getClassroomDataPassLog.js') }}"></script>
+{% endblock %}

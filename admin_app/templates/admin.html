@@ -1,0 +1,48 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+    Головна
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('admin_app.static', filename= 'css/admin.css') }}">
+{% endblock %}
+
+{% block name_page %}
+    Головна
+{% endblock %}
+
+{% block content %}
+<div class="search">
+    <h2>
+        Яка тема вам потрібна?
+    </h2>
+    <form class="search-line" id="searchForm" method="POST">
+        <img src="{{ url_for('admin_app.static', filename= 'images/search.svg') }}">
+        <input type="text" id="searchInput" name="search" placeholder="Знайдіть будь-яку тему...">
+        <button type="submit">
+            <img src="{{ url_for('admin_app.static', filename= 'images/search_button.svg') }}">
+        </button>
+    </form>  
+</div>
+<div class="active-quizes">
+    <h2>Популярні вікторини</h2>
+    <div class="quizes">
+        {% for quiz in quizes %}    
+            <a href="/host/{{ quiz.id }}" class="quiz">
+                <img src="{{ url_for('library_app.static', filename= quiz.image ) }}">
+                <h3>{{ quiz.name[:24] + "..." if quiz.name|length > 22 else quiz.name }}</h3>
+                <p class="quiz-description">{{ quiz.description }}</p>
+                <hr>
+                <p>{{ quiz.count_questions }} запитань</p>
+                <p>Автор: {{ quiz.user.surname }} {{ quiz.user.name }}</p>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('admin_app.static', filename= 'js/description.js') }}"></script>
+    <script src="{{ url_for('admin_app.static', filename= 'js/search.js') }}"></script>
+{% endblock %}

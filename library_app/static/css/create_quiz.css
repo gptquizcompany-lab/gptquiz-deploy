@@ -1,0 +1,728 @@
+@font-face {
+    font-family: Inter;
+    src: url(../fonts/Inter_28pt-Medium.ttf) format('truetype');
+    font-weight: 500;
+}
+@font-face {
+    font-family: Inter;
+    src: url(../fonts/Inter_28pt-Bold.ttf) format('truetype');
+    font-weight: 600;
+}
+@font-face {
+    font-family: Inter;
+    src: url(../fonts/Inter_28pt-Regular.ttf) format('truetype');
+    font-weight: 300;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Inter;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+body {
+    background-color: #2b2b2b;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border-bottom: 1px solid #202020;
+    width: 100vw;
+    height: 55px;
+    padding: 0px 20px;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+header div{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+header a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #454545;
+    width: 38px;
+    height: 38px;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+header a img {
+    width: 24px;
+    height: 24px;
+}
+
+header p {
+    font-family: 'Inter';
+    color: white;
+    font-weight: 300;
+    font-size: 24px;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+
+    justify-content: center;
+    align-items: start;
+    gap: 16px;
+    padding: 20px;
+}
+
+.main-creation {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+
+    padding: 40px 80px;
+}
+
+.sidebar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    background-color: #383838;
+    border-radius: 10px;
+    width: 20%;
+    min-height: 60vh;
+    max-height: 87vh;
+    padding: clamp(15px, 2vw, 100px);
+    gap: 10px;
+}
+
+.sidebar * {
+    color: white;
+}
+
+.sidebar p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+}
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;       
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.slides {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-bottom: 3px;
+    gap: 20px;
+}
+.AI-button {
+    color: #B26FFF;
+}
+
+.slide {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    margin-left: 10px;
+    width: calc(100% - 10px);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.slide h3 {
+    text-align: start;
+}
+.slide-under {
+    position: absolute;
+    bottom: -3px;
+    width: 100%;
+    height: 3px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+}
+.slide img {
+    width: 30px;
+}
+
+main{
+    position: fixed;
+    width: 100vw;
+    height: 100vw;
+    display: flex;
+    
+    align-items: flex-start;
+}
+
+.main-create-block{
+    position: relative;
+    max-height: 60%;
+    height: 40%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 30px 20px;
+    gap: 15px;
+    
+    background-color: #383838;
+    border-radius: 10px;
+}
+
+.main-create-block h1{
+    font-size: 22px;
+    color: white;
+}
+
+.create-block{
+    position: relative;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 15px 20px 15px;
+    gap: 10px;
+    
+
+    background-color: #2C2C2C;
+    
+    
+}
+
+
+
+
+
+.input-question{
+    width: 100%;
+    height: 100%;
+    border: solid white 1px;
+    border-radius: 5px;
+    text-align: center;
+    align-content: center;
+
+    font-size: clamp(10px, 1vw, 60px);
+    color: white;
+    background-color: #2C2C2C;
+    resize: none;
+
+}
+
+
+.answers-block{
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(5px, 0.4vw, 20px);
+
+
+}
+.answers-block div{
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+}
+
+
+.answers-block textarea{
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    text-align: center;
+    align-content: center;
+    font-size: clamp(10px, 0.9vw, 60px);
+    color: white;
+    border-radius: 5px;
+    resize: none;
+   
+}
+.answers-block textarea::placeholder{
+    color: white;
+    font-weight: 400;
+    opacity: 0.7;
+    
+}
+.block1{
+    background-color: #2C70AD ;
+  
+
+
+}
+
+.block2{
+    background-color: #EEA928 ;
+
+}
+
+.block3{
+    background-color: #22CE00 ;
+
+}
+
+.block4{
+    background-color: #D4546D ;
+
+}
+form {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+
+    width: 100%;
+}
+
+.button-save {
+    font-size: clamp(10px, 0.9vw, 30px);
+    font-weight: bold;
+
+    color: white;
+    background-color: #199700;
+
+    padding: 10px;
+
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.create-question {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px 30px 20px;
+    gap: 15px;
+    background-color: #383838;
+    border-radius: 10px;
+}
+
+.welcome-create-text{
+    color: white;
+    font-size: clamp(10px, 1vw, 60px);
+    font-weight: 500;
+   
+}
+
+.search-line{
+    width: 100%;
+    height: 35px;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.search-line img{
+    width: 25px;
+    height: 25px;
+}
+
+.search-line input{
+    width: 98%;
+    height: 100%;
+    border: none;
+    font-size: 16px;
+}
+
+
+.search-line button{
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.choose-question{
+    color: white;
+    font-size: clamp(20px, 1.1vw, 60px);
+    font-weight: 600;
+}
+
+
+.type-questions{
+    display: flex;
+    width: 720px;
+    flex-direction: row;
+    justify-content: start;
+    align-items: start;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    color: white;
+}
+
+.type-request{
+    display: flex;
+    align-items: center;
+    color: white;
+    gap: 10px;
+    padding: 10px;
+    width: 340px;
+    height: 50px;
+    font-weight: 300;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+    border-radius: 5px;
+}
+.type-request:hover {
+    background-color: #464646;
+}
+
+.type-request img{
+    height: 100%;
+    background-color: #9C47FF;
+    padding: 2px;
+    border-radius: 5px;
+
+}
+
+
+.enter-answer-div{
+    width: 95%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #252525;
+    border-radius: 10px;
+}
+
+.all-block{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    height: 80%;
+    padding: 20px;
+    background-color: #2C2C2C;
+    
+}
+
+.enter-answer-input{
+    width: 80%;
+    height: 50%;
+    border: solid rgba(#868686 .5) 1px;
+    border: 1px solid rgba(134, 134, 134, 0.5);
+    border-radius: 2px;
+    color: white;
+    text-align: center;
+    font-size: clamp(4px, 1.1vw, 60px);
+    background-color: #1D1D1D;
+}
+
+
+.div-button-save{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    
+}
+
+textarea:focus, input:focus{
+  transition: all 0.2s ease-in-out;
+  outline:solid #B26FFF 1px ;
+}
+
+.button-div{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button-save {
+    font-size: clamp(1px, 1.2vw, 100px);
+    font-weight: bold;
+    padding: 10px;
+    color: white;
+    background-color: #199700;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.button-save:disabled {
+    color: #656565;
+    background-color: #545454; 
+    cursor: not-allowed
+
+}
+
+.answers-block label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 22px;
+    
+    height: 22px;
+    background-color: #6D6D6D;
+    border: black 1px solid;
+    border-radius: 45px;
+    padding: 3px;
+    z-index: 5;
+    cursor: pointer;
+}
+.answers-block label img {
+    width: 100%;
+    height: 100%;
+}
+.focus {
+    background-color: #22CE00;
+}
+.correct-answer{
+    display: none;
+    
+}
+.correct-answer:checked + .correct-label{
+    background-color: #10C300;
+}
+
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 345px;
+    padding: 20px 10px;
+    gap: 10px;
+    background-color: #414141;
+    border-radius: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+}
+
+.form h2 {
+    font-size: 22px;
+    color: white;
+    font-weight: 500;
+    text-align: center;
+}
+
+.uploadLabel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 115px;
+    border: 2px dashed white;
+    border-radius: 10px;
+    cursor: pointer;
+    gap: 5px;
+    overflow: hidden;
+    position: relative;
+}
+.uploadLabel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.uploadLabel div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3.5px;
+    width: 40px;
+    height: 40px;
+    position: relative;
+}
+
+.uploadLabel div img {
+    width: 100%;
+    height: 100%;
+}
+
+.uploadLabel p {
+    color: white;
+    font-size: 16px;
+    width: 190px;
+}
+
+
+.uploadLabel span {
+    color: #2695DA;
+    text-decoration: underline;
+}
+
+hr {
+    width: 100%;
+}
+
+.form-inputs {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+
+.form-inputs label {
+    font-size: 16px;
+    color: white;
+}
+
+.form-inputs input, textarea {
+    padding: 10px;
+    background-color: #393939;
+    border: none;
+    color: white;
+    border-radius: 10px;
+}
+
+.form-inputs textarea {
+    resize: vertical;
+    min-height: 52px;
+}
+
+.form-inputs textarea::-webkit-scrollbar {
+    display: none;
+}
+
+.hideform {
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.1s ease-in-out;
+}
+
+.showform {
+    visibility: visible;
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+}
+#blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(2.5px);
+
+}
+.header-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.extend-desc {
+    color: #ff1818;
+    text-align: center;
+}
+#closeBtn {
+    border: 2px #FFFFFF solid;
+    background: none;
+}
+#closeBtn:hover {
+    border: 2px #FFFFFF dashed;
+}
+.form button {
+    width: 155px;
+    height: 41px;
+    background-color: #B26FFF;
+    border: none;
+    font-size: 16px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+.form button:hover {
+    background-color: #9C47FF;
+}
+#Delete, #SaveAndExit {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+#SaveAndExit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    border-radius: 10px;
+    background-color: #9C47FF;
+    border: none;
+    transition: background-color 0.3s ease-in;
+}
+#SaveAndExit:hover {
+    background-color: #7d38cc;
+}
+#SaveAndExit p, #Delete p{
+    font-size: 18px;
+    font-weight: 300;
+}
+#SaveAndExit img, #Delete img{
+    width: 22px;
+    height: 22px;
+}
+.backwood {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    padding: 4px;
+    justify-items: center;
+}
+.backwood img {
+    width: 100%;
+    height: 100%;
+}
+.label-for-image {
+    position: absolute;
+    left: 30px;
+    top: 35px;
+    width: 30px;
+    height: 30px;
+    background-color: #6d6d6d;
+    border-radius: 5px;
+    display: flex;
+    justify-items: center;
+    padding: 4px;
+    cursor: pointer;
+}
+#Delete {
+    background: none;
+    border: 1px #FFFFFF solid;
+}

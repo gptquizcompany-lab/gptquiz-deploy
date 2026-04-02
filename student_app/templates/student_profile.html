@@ -1,0 +1,25 @@
+{% extends 'base_student.html' %}
+
+{% block title %}
+    Мій профіль
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('student_app.static', filename= 'css/student_profile.css') }}">
+{% endblock %}
+
+{% block name_page %}
+    Профіль
+{% endblock %}
+
+{% block content %}
+<div class="profile-header">
+    <div class="avatar-container">
+        <img src="{{ url_for('static', filename='images/avatar.svg') }}" alt="Avatar" class="avatar">
+    </div>
+    <div class="nickname-container">
+        <h2 class="nickname">{{ current_user.surname }} {{ current_user.name }}</h2>
+        <p class="email">{{ current_user.login }}</p>
+    </div>
+</div>
+{% endblock %}

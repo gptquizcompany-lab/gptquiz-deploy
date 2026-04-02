@@ -1,0 +1,340 @@
+.myClassLink {
+	opacity: 1;
+	width: 100%;
+}
+main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+}
+main p {
+	color: white;
+	opacity: 0.8;
+}
+.table {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	align-items: center;
+	padding: 10px 20px 30px;
+	gap: 10px;
+	background-color: #3a3a3a;
+	border-radius: 30px;
+}
+.copy-container {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+#copy-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+#img-copy {
+	width: 25px;
+}
+.header-classroom {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px;
+}
+.tabs {
+	display: flex;
+	gap: 10px;
+}
+.selected {
+	color: #9c47ff;
+	border: none;
+	border-bottom: #9c47ff 5px solid;
+}
+.not {
+	color: #afafaf;
+	border: none;
+}
+.tab {
+	font-size: 22px;
+	font-weight: 300;
+	border-radius: 5px;
+	cursor: pointer;
+	background: none;
+	padding: 10px;
+}
+.addnewclass {
+	display: flex;
+	align-items: center;
+}
+/*  */
+.create-form {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 350px;
+	background-color: #2b2b2b;
+	border-radius: 15px;
+	padding: 25px;
+	gap: 15px;
+	opacity: 1;
+	visibility: visible;
+	transition: all 0.3s ease;
+	z-index: 7;
+}
+.info-in-modal {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+}
+.modalinfo h4 {
+	font-size: 20px;
+}
+.create-form {
+	color: white;
+}
+.create-form p {
+	font-size: 20px;
+}
+.create-form h3 {
+	font-size: 16px;
+	color: #e92c2c;
+}
+.create-form div {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	gap: 5px;
+}
+.create-form label {
+	font-size: 16px;
+}
+.create-form div input {
+	height: 35px;
+	padding: 5px 15px;
+	border-radius: 5px;
+	border: 1px #181818 solid;
+	background-color: #202020;
+	text-align: start;
+	color: white;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+.create-form button {
+	cursor: pointer;
+	font-weight: 500;
+}
+.submit {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 20px;
+	border-radius: 10px;
+	font-size: 16px;
+	background-color: #9c47ff;
+	border: none;
+	color: white;
+}
+.close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 25px;
+	background: none;
+	border: none;
+}
+.close img {
+	width: 25px;
+}
+.blur {
+	position: fixed;
+	display: block;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.35);
+	backdrop-filter: blur(2.5px);
+	z-index: 6;
+	opacity: 1;
+	visibility: visible;
+	transition: all 0.3s ease;
+}
+.hideform {
+	opacity: 0;
+	visibility: hidden;
+}
+#add {
+	height: 40px;
+	background-color: #1ca700;
+	border: none;
+	border-radius: 10px;
+	color: white;
+	font-family: "inter";
+	font-size: 16px;
+	cursor: pointer;
+	transition: all 0.3s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 15px;
+}
+.studentContainer {
+	color: white;
+	display: grid;
+	grid-template-columns: 300px 1fr;
+	border-top: 2px solid #2b2b2b;
+	align-items: center;
+	gap: 10px;
+}
+.student-start {
+	display: grid;
+	grid-template-columns: 40px 1fr;
+	padding: 10px 15px;
+	gap: 10px;
+}
+.studentContainer h3 {
+	font-size: 18px;
+	font-weight: 400;
+}
+.student {
+	color: white;
+	text-decoration: underline;
+}
+.students {
+	position: relative;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	border-radius: 20px;
+	border: 2px solid #2b2b2b;
+	overflow: hidden;
+}
+.content {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+.number {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.header-students {
+	padding: 10px 15px;
+	display: grid;
+	grid-template-columns: 300px 1fr;
+	height: 44px;
+	width: 100%;
+	gap: 20px;
+	background-color: #212121;
+	gap: 10px;
+}
+.header-students h3 {
+	color: white;
+}
+.header-start {
+	display: grid;
+	grid-template-columns: 40px 1fr;
+	gap: 10px;
+}
+.students.hide {
+	display: none;
+}
+.chart-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+.chart-container.hide {
+	display: none;
+}
+.chart-container h3 {
+	text-align: center;
+	color: #fff;
+	margin-bottom: 15px;
+	font-size: 1.2rem;
+}
+.apexcharts-toolbar {
+	z-index: 3 !important;
+}
+
+.stats {
+	display: flex;
+	flex-direction: column;
+}
+.stats h1 {
+	text-align: center;
+	color: white;
+}
+.controls-container {
+	margin-bottom: 20px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	justify-content: center;
+	align-items: center;
+}
+
+.controls-container p {
+	color: white;
+}
+
+.date-input {
+	padding: 10px;
+	border-radius: 8px;
+	border: 1px solid #ddd;
+	outline: none;
+	transition: border 0.3s;
+}
+
+.date-input:focus {
+	border-color: #008ffb;
+}
+
+.update-btn {
+	padding: 10px 25px;
+	cursor: pointer;
+	background: #008ffb;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	font-weight: bold;
+	transition: opacity 0.2s;
+}
+
+.update-btn:hover {
+	opacity: 0.8;
+}
+
+.charts-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 25px;
+	padding: 20px;
+}
+
+.chart-card {
+	width: 100%;
+	background: #212121;
+	padding: 20px;
+	border-radius: 15px;
+	flex-direction: column;
+}
+#successfulRate {
+	width: 100% !important;
+	flex-grow: 1;
+}
+.hide {
+	display: none;
+}

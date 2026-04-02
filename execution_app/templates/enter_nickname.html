@@ -1,0 +1,664 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Тестування | GPTQuiz</title>
+        <link rel="stylesheet" href="{{ url_for('execution_app.static', filename='css/execution.css') }}">
+        <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/atom.svg') }}">
+        <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    </head>
+    <body>
+        <header style="display:none;" id="header">
+            <div class="title-logo" href="/">
+                <img src="{{ url_for('static', filename= 'images/atom.svg') }}">
+                <h1>GPTQuiz</h1>
+            </div>
+            <div class="timer">
+                <img class="img-timer" src="{{ url_for('execution_app.static', filename='images/timer.svg') }}">
+                <h3><span id="minutes">00</span>:<span id="seconds">00</span></h3>
+            </div>
+            <div>
+                <p id="currentQ"></p>
+                <p>/</p>
+                <p>{{ quiz.questions|length }}</p>
+            </div>
+        </header>
+        <div id="student-result"></div>
+        <div class="waiting-divdiv">
+
+        </div>
+        <div id="lobby">
+            <h1 id="quiz-title">{{ quiz.name }}</h1>
+            <h2>Ім'я вчителя: {{ teacher.name }} {{ teacher.surname }}</h2>
+            <h2>Кількість запитань: {{ quiz.questions|length }}</h2>
+            <hr>
+            <h2>Під'єднані користувачі:</h2>
+            <ul id="users"></ul>
+        </div>
+        <div id="modalImage" class="modal hidemodal">
+            <button id="closeModal"><img src="{{ url_for('library_app.static', filename='images/close.svg') }}"></button>
+            <div>
+                <img id="modalImageContent" src="" alt="Modal Image">
+            </div>
+        </div>
+        <div id="Wblur" class="hideblur"></div>
+        <div id="WWblur" class="hideblur"></div>
+        <script>
+            document.addEventListener("DOMContentLoaded", ()=> {
+                const socket = io();
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get("code");
+                const div = document.getElementById('lobby');
+                const modal = document.getElementById('modalImage');
+                const text_caption = {
+                    wait: [
+                        "Поки інші думають, ти вже на крок попереду.",
+                        "Мить тиші перед твоїм наступним успіхом.",
+                        "Генії завжди приходять першими. Хвилинка терпіння до решти.",
+                        "Завантажуємо перемогу... Залишилось зовсім трохи."
+                    ],
+                    correct: [
+                        "Абсолютно вірно. Хоча, хтось сумнівався?",
+                        "Це було надто легко для тебе!",
+                        "Легко! Наступне так само, це було на один зуб.",
+                        "Твій інтелект не знає меж!"
+                    ],
+                    incorrect: [
+                        "Майже! Всесвіт виявився трохи складнішим.",
+                        "Ех, майже затащив! Наступне точно за тобою.",
+                        "Помилка — це лише крок до досконалості.",
+                        "Невдача — це лише паливо для майбутньої перемоги."
+                    ],
+                    skipped: [
+                        "Занадто легко для твоєї уваги?",
+                        "Ну і ладно, це питання все одно було нудне.",
+                        "Мінус один, але попереду ще купа шансів!",
+                        "Залишимо це питання для історії."
+                    ],
+                }
+                let answered = false;
+                let username = "{{ username }}"
+                let student_id= "{{ student.id }}"
+                
+                function shuffleArray(array) {
+                    const shuffled = [...array];
+                    for (let i = shuffled.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                    }
+                    return shuffled;
+                }
+                let answer1, answerDiv, my_hash;
+                const quizId = '{{ quiz.id }}'
+                let timeLeft = 0; 
+                let timerInterval = null;
+
+                const minutesSpan = document.getElementById("minutes");
+                const secondsSpan = document.getElementById("seconds");
+
+                function updateTimerDisplay() {
+                    let mins = Math.floor(timeLeft / 60);
+                    let secs = timeLeft % 60;
+                    minutesSpan.textContent = mins.toString().padStart(2, '0');
+                    secondsSpan.textContent = secs.toString().padStart(2, '0');
+                }
+
+                function startTimer(duration) {
+                    clearInterval(timerInterval);
+                    timeLeft = duration;
+                    updateTimerDisplay();
+
+                    timerInterval = setInterval(() => {
+                        if (timeLeft > 0) {
+                            timeLeft--;
+                            updateTimerDisplay();
+                        } else {
+                            clearInterval(timerInterval);
+                        }
+                    }, 1000);
+                }
+
+                function handleKeyPress(event) {
+                    const key = event.key;
+                    if (['1', '2', '3', '4'].includes(key)) {
+                        const btnIndex = parseInt(key); 
+                        const btn = document.getElementById(`answerBtn${btnIndex}`);
+                        
+                        if (btn) {
+                            btn.click(); 
+                        }
+                    }
+                }
+
+                function stopKeyboardTracking() {
+                    document.removeEventListener('keydown', handleKeyPress);
+                }
+                
+
+                socket.emit("join_room", { code, quizId, student_id });
+                
+                socket.on("auto_join_error", data => {
+                    console.log("ERORORO:", data.message)
+                });
+
+                socket.on("join_error", data => {
+                    alert(data.message);
+                });
+
+                socket.on("redirect_to", data => {
+                    window.location.replace(`${window.location.origin}${data.url}`)
+                })
+                
+                socket.on("joined_success", data => {
+                    document.getElementById("lobby").style.display = "flex";
+                    document.getElementById("header").style.display = "grid";
+                    document.getElementById("currentQ").textContent = "0"
+                    document.getElementById("quiz-title").textContent = data.quiz_name;
+                    my_hash = data.hash
+                });
+                
+                socket.on("join_error", data => {
+                    alert(data.message);
+                });
+                
+                socket.on("user_list_update", data => {
+                    const userList = document.getElementById("users");
+                    userList.innerHTML = ""; 
+                    data.students.forEach(student => {
+                        if (student[2] === false) {
+                            return;
+                        }
+                        const li = document.createElement("li");
+                        li.textContent = student[0];
+                        userList.appendChild(li);
+                    });
+                });
+
+                socket.on("remove_student_client", data => {
+                    if (data.hash !== my_hash) return;
+                    alert("Вас видалено з кімнати.");
+                    window.location.href = "/";
+                });
+    
+                function blockPanel(msg = "Зачекайте...") {
+                    if (document.getElementById('waitingDiv')) {
+                        document.getElementById('waitingDiv').remove();
+                    }
+                    const waitingDiv = document.createElement('div');
+                    waitingDiv.id = 'waitingDiv';
+                    waitingDiv.innerHTML = `
+                        <img class="spinner" src="{{ url_for('execution_app.static', filename="images/wait.svg") }}">
+                        <h2 id="waitingText">${msg}</h2>
+                        <h3 id="underText">${text_caption.wait[Math.floor(Math.random() * 4)]}</h3>
+                    `;
+                    document.body.appendChild(waitingDiv);
+                    void waitingDiv.offsetWidth
+    
+                    waitingDiv.classList.add('waiting-div');
+                    if (document.getElementById('sendBtn')){
+                        document.getElementById('sendBtn').disabled = true
+                        document.getElementById('sendBtn').style.cursor = "not-allowed"
+                    } 
+                    
+                    const WWblur = document.getElementById('WWblur');
+                    WWblur.classList.remove('hideblur');
+    
+                }
+                
+                function uploadAnswer(answer, questionID, btnValue) {
+                    if (answered) {
+                        return
+                    }
+                    blockPanel();
+                    
+                    answer1 = answer
+                    answersDiv = document.getElementById('answers');
+                    answers = answersDiv.querySelectorAll('.answer-button');
+                    
+                    if (!Array.isArray(answer1)) {
+                        try {
+                            answerDiv = document.querySelector(`.answer-button[value="${answer}"]`);
+                            answers.forEach(btn => {
+                                if (btn.value != btnValue) {
+                                    btn.style.opacity = 0
+                                }
+                            });
+                            answerDiv.style.opacity = 1;
+                        }
+                        catch {
+                            console.log("No button found for this answer type");
+                        }
+                        
+                    }
+                    else if (Array.isArray(answer1)) {
+                        answers.forEach(btn => {
+                            if (!btnValue.includes(parseInt(btn.getAttribute('data-value')))) {
+                                btn.style.opacity = 0
+                            }
+                            else {
+                                btn.style.opacity = 1
+                            }
+                        });
+                        
+                    }
+    
+                    answered = !answered
+                    socket.emit("answer", {answer: answer, question_id: questionID, username, code, my_hash});
+                }
+                socket.on("question_timer", data => {
+                    startTimer(data.remaining)
+                })
+    
+                socket.on("quiz_start_student", data => {
+                    div.style.display = 'none';
+                    if (answered) {
+                        answered = !answered
+                    }
+                    document.getElementById("WWblur").classList.add('hideblur');
+                    const modal = document.getElementById('modalImage');
+                    modal.classList.add('hidemodal');
+                    if (document.getElementById("general")) {
+                        document.getElementById("general").classList.add("fadeOut")
+                        setTimeout(() => {
+                            document.getElementById("general").remove();
+                        }, 500)
+                    }
+                    const generalDiv = document.createElement('div');
+                    generalDiv.id = 'general';
+                    const questionDiv = document.createElement('div');
+                    questionDiv.id = 'question';
+                    const title = document.createElement('h2');
+                    title.textContent = data.name;
+                    questionDiv.appendChild(title);
+                    const answersDiv = document.createElement('div');
+                    answersDiv.id = 'answers';
+                    
+                    if (data.type === "multiple answers") {
+                        const shuffledVariants = shuffleArray(data.variants);
+                        shuffledVariants.forEach((variant, index) => {
+                            const label = document.createElement('label');
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.value = `${variant.id}`;
+                            label.id = `answerBtn${index + 1}`;
+                            label.classList.add("answer-button");
+                            label.setAttribute('data-value', variant.id);
+                            label.appendChild(checkbox);
+                            label.append(`${variant.text}`);
+                            const numberCount = document.createElement("div")
+                            const numberCountText = document.createElement("p")
+                            numberCount.classList.add("numberContainer")
+                            numberCountText.classList.add("numberCount")
+                            numberCountText.textContent = `${index + 1}`
+                            numberCount.appendChild(numberCountText)
+                            label.appendChild(numberCount)
+                            answersDiv.appendChild(label);
+                            document.addEventListener('keydown', handleKeyPress);
+                        });
+    
+                            const sendBtn = document.createElement('button');
+                        sendBtn.id = 'sendBtn';
+                        const sendDivInBtn = document.createElement("div")
+                        sendDivInBtn.classList.add("send-btn-internal-div")
+                        const sendPInBtn = document.createElement("p")
+                        sendPInBtn.textContent = "Відправити -->";
+                        sendDivInBtn.appendChild(sendPInBtn)
+                        sendBtn.appendChild(sendDivInBtn)
+
+                        sendBtn.onclick = () => {
+                            const checked = Array.from(answersDiv.querySelectorAll('input[type="checkbox"]:checked')).map(cb => parseInt(cb.value));
+                            if (checked.length === 0) {
+                                alert("Выбери хотя бы один вариант!");
+                                return;
+                            }
+                            stopKeyboardTracking(); 
+                            uploadAnswer(checked, data.id, checked);
+                        };
+                        generalDiv.appendChild(sendBtn);
+                        
+                    } else if (data.type === "enter answer") {
+                        generalDiv.classList.add('fill');
+
+                        const charContainer = document.createElement('div');
+                        charContainer.id = 'charInputsContainer';
+
+                        const correctAnswer = String(data.correct_answer);
+                        const inputs = []; 
+
+                        correctAnswer.split('').forEach((char, index) => {
+                            if (char === ' ') {
+                                const spacer = document.createElement('div');
+                                spacer.style.width = '30px'; 
+                                charContainer.appendChild(spacer);
+                                inputs.push({ type: 'space' });
+                            } else {
+                                const charInput = document.createElement('input');
+                                charInput.type = 'text';
+                                charInput.maxLength = 1;
+                                charInput.inputMode = 'text';
+                                charInput.setAttribute('autocomplete', 'off');
+                                charInput.setAttribute('spellcheck', 'false');
+
+                                charInput.classList.add('char-box');
+                                charInput.style.width = '40px';
+                                charInput.style.textAlign = 'center';
+                                charInput.style.fontSize = '20px';
+                                charInput.style.textTransform = 'uppercase';
+
+                                charInput.addEventListener('input', (e) => {
+                                    if (e.target.value.length === 1) {
+                                        const nextInput = charContainer.querySelectorAll('input')[Array.from(charContainer.querySelectorAll('input')).indexOf(charInput) + 1];
+                                        if (nextInput) nextInput.focus();
+                                    }
+                                });
+
+                                charInput.addEventListener('keydown', (e) => {
+                                    if (e.key === 'Backspace') {
+                                        if (charInput.value === '') {
+                                            const allInputs = Array.from(charContainer.querySelectorAll('input'));
+                                            const currentIndex = allInputs.indexOf(charInput);
+                                            if (currentIndex > 0) {
+                                                const prevInput = allInputs[currentIndex - 1];
+                                                prevInput.focus();
+                                                prevInput.value = '';   
+                                            }
+                                        }
+                                    }
+                                });
+
+                                charContainer.appendChild(charInput);
+                                inputs.push({ type: 'input', el: charInput });
+                            }
+                        });
+
+                        answersDiv.appendChild(charContainer);
+
+                        const sendBtn = document.createElement('button');
+                        sendBtn.id = 'sendBtn';
+                        const sendDivInBtn = document.createElement("div")
+                        sendDivInBtn.classList.add("send-btn-internal-div")
+                        const sendPInBtn = document.createElement("p")
+                        sendPInBtn.textContent = "Відправити -->";
+                        sendDivInBtn.appendChild(sendPInBtn)
+                        sendBtn.appendChild(sendDivInBtn)
+
+                        sendBtn.onclick = () => {
+                            let finalAnswer = "";
+                            let inputIdx = 0;
+                            correctAnswer.split('').forEach(char => {
+                                if (char === ' ') {
+                                    finalAnswer += " ";
+                                } else {
+                                    const inputEl = charContainer.querySelectorAll('input')[inputIdx];
+                                    finalAnswer += inputEl.value;
+                                    inputIdx++;
+                                }
+                            });
+
+                            if (finalAnswer.trim().length === 0) {
+                                alert("Будь ласка, введіть відповідь.");
+                                return;
+                            }
+
+                            uploadAnswer(finalAnswer, data.id);
+                        };
+
+                        generalDiv.appendChild(sendBtn);
+                    } else {
+                        const shuffledVariants = shuffleArray(data.variants);
+                        shuffledVariants.forEach((variant, index) => {
+                            const btn = document.createElement("button")
+                            btn.textContent = `${variant.text}`
+                            btn.id = `answerBtn${index + 1}`
+                            btn.value = variant.id
+                            btn.classList.add("answer-button")
+                            btn.onclick = () => {
+                                stopKeyboardTracking(); 
+                                uploadAnswer(btn.value, data.id, btn.value);
+                            };
+                            const numberCount = document.createElement("div")
+                            const numberCountText = document.createElement("p")
+                            numberCount.classList.add("numberContainer")
+                            numberCountText.classList.add("numberCount")
+                            numberCountText.textContent = `${index + 1}`
+                            numberCount.appendChild(numberCountText)
+                            btn.appendChild(numberCount)
+                            answersDiv.appendChild(btn) 
+                            document.addEventListener('keydown', handleKeyPress);
+                        })
+                    }
+                    if (data.image) {
+                        const nameQuestionMedia = document.createElement('img');
+                        const Wblur = document.getElementById('Wblur');
+                        
+                        nameQuestionMedia.src = `/library/images/${data.image}`;
+                        nameQuestionMedia.alt = "Question Image";
+                        nameQuestionMedia.classList.add('question-image');
+                        nameQuestionMedia.id = 'questionImage';
+                        
+                        const magnifier = document.createElement("img")
+                        magnifier.src = "{{ url_for('host_app.static', filename= 'images/magnifying-glass.svg') }}"
+                        magnifier.classList.add("name-question-magnifier")
+
+                        const wrapper = document.createElement("div")
+                        wrapper.classList.add("name-question-image-wrapper")
+                        wrapper.appendChild(nameQuestionMedia)
+                        wrapper.appendChild(magnifier)
+                        
+                        wrapper.addEventListener('click', () => {
+                            const img = document.getElementById('modalImageContent');
+                            img.src = nameQuestionMedia.src;
+                            modal.classList.remove('hidemodal');
+                            Wblur.classList.remove('hideblur');
+                        });
+                        const closeModalBtn = document.getElementById('closeModal');
+                        closeModalBtn.addEventListener('click', () => {
+                            modal.classList.add('hidemodal');
+                            Wblur.classList.add('hideblur');
+                        });
+                        Wblur.addEventListener('click', () => {
+                            modal.classList.add('hidemodal');
+                            Wblur.classList.add('hideblur');
+                        });
+                        questionDiv.appendChild(wrapper)
+                    }
+                    generalDiv.appendChild(questionDiv);
+                    
+                    generalDiv.appendChild(answersDiv);
+                    document.body.appendChild(generalDiv);
+                    document.getElementById("currentQ").textContent = data.current_question
+                    document.getElementById('notifyDiv')?.remove();
+                    document.getElementById('notifyDiv')?.remove();
+                });
+            
+                socket.on("current_question_info", data => {
+                    blockPanel()
+                    console.log(data.answer_id)
+                    if (data.answer_id === "wait") {
+                        return
+                    }
+                    document.getElementById('waitingDiv').remove();
+                    document.getElementById("WWblur").classList.add('hideblur');
+                    const allBtns = document.querySelectorAll('.answer-button');
+                    
+                    if (data.type === 'one answer') {
+                        if (data.is_correct) {
+                            const answerBtn = document.querySelector(`.answer-button[value="${data.answer_id}"]`);
+                            answerBtn.style.opacity = 1;
+                            answerBtn.style.backgroundColor = 'green';
+                        }
+                        else {
+                            const answerBtn = document.querySelector(`.answer-button[value="${data.answer_id}"]`);
+                            answerBtn.style.opacity = 1;
+                            answerBtn.style.backgroundColor = 'red';
+                            const correctBtn = document.querySelector(`.answer-button[value="${data.correct_answer_id}"]`);
+                            if (correctBtn) {
+                                correctBtn.style.opacity = 1;
+                                correctBtn.style.backgroundColor = 'green';
+                            }
+                        }
+                    }
+                    else if (data.type === 'multiple answers') {
+                        allBtns.forEach(btn => {
+                            const btnId = parseInt(btn.getAttribute('data-value'));
+                            if (!data.answer_id.includes(btnId) && !data.correct_answer_id.includes(btnId)) {
+                                btn.style.opacity = 0; 
+                        }});
+                        const userAnswerBtns = data.answer_id.map(id => document.querySelector(`.answer-button[data-value="${id}"]`));
+                        userAnswerBtns.forEach(btn => {
+                            btn.style.opacity = 1;
+                            btn.style.backgroundColor = 'red';
+                        });
+                        const correctAnswerBtns = data.correct_answer_id.map(id => document.querySelector(`.answer-button[data-value="${id}"]`));
+                        correctAnswerBtns.forEach(btn => {
+                            btn.style.opacity = 1;
+                            btn.style.backgroundColor = 'green';
+                        });
+                    }
+                    const notifyDiv = document.createElement('div')
+                    notifyDiv.classList.add('notify-div')
+                    notifyDiv.id = 'notifyDiv'
+                    if (data.is_correct === "wait") {
+                        if (document.getElementById("WWblur").classList.contains('hideblur') === true) {
+                            document.getElementById("WWblur").classList.remove('hideblur');
+                        }
+                        blockPanel()
+                    }
+                    else if (data.answer_id === "Пропущений..." || data.is_correct === "skipped") {
+                        if (document.getElementById("WWblur").classList.contains('hideblur') === true) {
+                            document.getElementById("WWblur").classList.remove('hideblur');
+                        }
+                        notifyDiv.classList.add('notify-skipped')
+                        notifyDiv.innerHTML = `
+                            <h2>Пропущено</h2>
+                            <h3 id="underText">${text_caption.skipped[Math.floor(Math.random() * 4)]}</h3>
+                        `
+                    }
+                    else if (data.is_correct) {
+                        if (document.getElementById("WWblur").classList.contains('hideblur') === true) {
+                            document.getElementById("WWblur").classList.remove('hideblur');
+                        }
+                        notifyDiv.classList.add('notify-correct')
+                        notifyDiv.innerHTML = `
+                            <h2>Правильно</h2>
+                            <h3 id="underText">${text_caption.correct[Math.floor(Math.random() * 4)]}</h3>
+                        `
+                    }
+                    else {
+                        if (document.getElementById("WWblur").classList.contains('hideblur') === true) {
+                            document.getElementById("WWblur").classList.remove('hideblur');
+                        }
+                        notifyDiv.classList.add('notify-wrong')
+                        notifyDiv.innerHTML = `
+                            <h2>Не правильно</h2>
+                            <h3 id="underText">${text_caption.incorrect[Math.floor(Math.random() * 4)]}</h3>
+                        `
+                    }
+                    document.body.appendChild(notifyDiv);
+                    void notifyDiv.offsetWidth;
+                    void notifyDiv.offsetHeight
+                    notifyDiv.style.width = '100vw';
+                    setTimeout(() => {
+                        notifyDiv.querySelector("h3").classList.add("hide")
+                        notifyDiv.style.top = "80%";
+                        notifyDiv.style.height = '50px';
+                    }, 2500);
+                })
+
+                socket.on("student_result", (data) => {
+                    clearInterval(timerInterval);
+                    timeLeft = 0;
+                    updateTimerDisplay();
+                    if (document.getElementById('waitingDiv')) {
+                        document.getElementById('waitingDiv').remove();
+                    }
+                    if (document.getElementById("WWblur").classList.contains('hideblur')) {
+                        document.getElementById("WWblur").classList.remove('hideblur');
+                    }
+                    const allBtns = document.querySelectorAll('.answer-button');
+                    
+                    const notifyDiv = document.createElement('div')
+                    notifyDiv.classList.add('notify-div')
+                    notifyDiv.id = 'notifyDiv'
+
+                    if (data.answer_id === "Пропущений..." || data.answer_id[0] === "Пропущений") {
+                        notifyDiv.classList.add('notify-skipped')
+                        notifyDiv.innerHTML = `
+                            <h2>Пропущено</h2>
+                            <h3 id="underText">${text_caption.skipped[Math.floor(Math.random() * 4)]}</h3>
+                        `
+                    }
+                    else if (data.is_correct) {
+                        notifyDiv.classList.add('notify-correct')
+                        notifyDiv.innerHTML = `
+                            <h2>Правильно</h2>
+                            <h3 id="underText">${text_caption.correct[Math.floor(Math.random() * 4)]}</h3>
+                        `
+                    }
+                    else {
+                        notifyDiv.classList.add('notify-wrong')
+                        notifyDiv.innerHTML = `
+                            <h2>Не правильно</h2>
+                            <h3 id="underText">${text_caption.incorrect[Math.floor(Math.random() * 4)]}</h3>
+                        `
+                    }
+                    document.body.appendChild(notifyDiv);
+                    void notifyDiv.offsetWidth;
+                    void notifyDiv.offsetHeight
+                    notifyDiv.style.width = '100vw';
+                    setTimeout(() => {
+                        notifyDiv.querySelector("h3").classList.add("hide")
+                        notifyDiv.style.top = "80%";
+                        notifyDiv.style.height = '50px';
+                    }, 2500);
+                    
+                    if (data.type === 'one answer') {
+                        if (data.is_correct) {
+                            const answerBtn = document.querySelector(`.answer-button[value="${data.answer_id}"]`);
+                            answerBtn.style.opacity = 1;
+                            answerBtn.style.backgroundColor = 'green';
+                        }
+                        else {
+                            const answerBtn = document.querySelector(`.answer-button[value="${data.answer_id}"]`);
+                            answerBtn.style.opacity = 1;
+                            answerBtn.style.backgroundColor = 'red';
+                            const correctBtn = document.querySelector(`.answer-button[value="${data.correct_answer_id}"]`);
+                            if (correctBtn) {
+                                correctBtn.style.opacity = 1;
+                                correctBtn.style.backgroundColor = 'green';
+                            }
+                        }
+                    }
+                    else if (data.type === 'multiple answers') {
+                        if (data.answer_id !== "Пропущений...") {
+                            allBtns.forEach(btn => {
+                                const btnId = parseInt(btn.getAttribute('data-value'));
+                                if (!data.answer_id.includes(btnId) && !data.correct_answer_id.includes(btnId)) {
+                                    btn.style.opacity = 0; 
+                            }});
+                            const userAnswerBtns = data.answer_id.map(id => document.querySelector(`.answer-button[data-value="${id}"]`));
+                            userAnswerBtns.forEach(btn => {
+                                btn.style.opacity = 1;
+                                btn.style.backgroundColor = 'red';
+                            });
+                            const correctAnswerBtns = data.correct_answer_id.map(id => document.querySelector(`.answer-button[data-value="${id}"]`));
+                            correctAnswerBtns.forEach(btn => {
+                                btn.style.opacity = 1;
+                                btn.style.backgroundColor = 'green';
+                            });
+                        }
+                    }
+                });
+                socket.on("end_quiz", data => {
+                    url = window.location.origin + "/student/report/" + data.hash_code
+                    window.location.href = url;
+                }); 
+                socket.on("add_time", () => { 
+                    timeLeft += 15;
+                    updateTimerDisplay();
+                });
+            })
+        </script>
+        <!--  -->
+    </body>
+</html>

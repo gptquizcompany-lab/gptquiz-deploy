@@ -1,0 +1,74 @@
+{% extends "base_admin.html" %}
+
+{% block title %}
+host
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('host_app.static', filename='css/static.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="info-quiz">
+        <img src="{{ url_for('library_app.static', filename=quiz.image) }}" class="ImgQuiz" alt="">
+        <div class="text">
+            <div class="text-info">
+                <h1>Назва: {{ quiz.name }}</h1>
+                <p>Опис: {{ quiz.description }}</p>
+            </div>
+            <div>
+                <h2>Кількість запитань: {{ quiz.count_questions }}</h2>
+                <h2>Автор: {{ quiz.user.surname }} {{ quiz.user.name }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="buttons">
+        <form method="post">
+            <label for="choice">Оберіть клас або курс:</label>
+            <select id="choice" class="group_choice" name="group_class" required>
+                <option value="" disabled selected>Клас</option>
+                {% for clsr in user.classes %}
+                    <option value="{{ clsr.id }}">{{ clsr.number }}-{{ clsr.char }}</option>
+                    {% for course in clsr.courses %}
+                        <option value="{{ clsr.id }} {{ course.id }}">{{ clsr.number }}-{{ clsr.char }} ({{ course.name }})</option>
+                    {% endfor %}
+                {% endfor %}
+            </select>
+            <button id="submit-btn" type="submit" name="btn" value="host" class="submit">Задати на виконання</button>
+        </form>
+        {% if user.id == quiz.author_id %}
+            <form method="post">
+                <button type="submit" name="btn" value="delete" style="background-color: red;">Видалити вікторину</button>
+            </form>
+        {% endif %}
+    </div>
+    
+    <div class="questions">
+        {% for question in quiz.questions %}
+            <hr>
+            <div class="question">
+                {% if question.image %}
+                    <img src="{{ url_for('library_app.static', filename= 'images/' + question.image) }}">
+                {% endif %}
+                <h2>Запитання {{ loop.index }}: {{ question.name }}</h2>
+                {% if question.type != 'enter answer' %}
+                    <h2>Варіанти відповіді:</h2>
+                    <div class="answers">
+                        <div class="answer">
+                            <p>{{ question.variant_1 }}</p>
+                        </div>
+                        <div class="answer">
+                            <p>{{ question.variant_2 }}</p>
+                        </div>
+                        <div class="answer">
+                            <p>{{ question.variant_3 }}</p>
+                        </div>
+                        <div class="answer">
+                            <p>{{ question.variant_4 }}</p>
+                        </div>  
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

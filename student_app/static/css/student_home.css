@@ -1,0 +1,167 @@
+.welcome {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 5px;
+}
+.welcome-text {
+	font-size: 24px;
+	color: white;
+}
+.nothing-text {
+	color: #ffffff;
+}
+.stats {
+	display: flex;
+	flex-direction: column;
+}
+.stats h1 {
+	text-align: center;
+	color: white;
+	font-size: 20px;
+}
+.history {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 10px;
+}
+.history h2 {
+	color: white;
+}
+.history a {
+	display: flex;
+	flex-direction: column;
+	color: white;
+}
+
+.controls-container {
+	margin-bottom: 20px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	justify-content: center;
+	align-items: center;
+}
+.controls-container input {
+	color: black;
+}
+.controls-container p {
+	color: white;
+}
+
+.date-input {
+	padding: 10px;
+	border-radius: 8px;
+	border: 1px solid #ddd;
+	outline: none;
+	transition: border 0.3s;
+}
+
+.date-input:focus {
+	border-color: #008ffb;
+}
+
+.update-btn {
+	padding: 10px 25px;
+	cursor: pointer;
+	background: #008ffb;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	font-weight: bold;
+	transition: opacity 0.2s;
+}
+
+.update-btn:hover {
+	opacity: 0.8;
+}
+
+.charts-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 25px;
+	padding: 20px;
+}
+
+.chart-card {
+	background: #212121;
+	padding: 20px;
+	border-radius: 15px;
+}
+
+.chart-card h3 {
+	text-align: center;
+	color: #ecdcdc;
+	margin-bottom: 15px;
+	font-size: 1.2rem;
+}
+
+@media (max-width: 900px) {
+	.charts-grid {
+		grid-template-columns: 1fr;
+		gap: 25px;
+		padding: 10px;
+	}
+}
+
+#activeQuizes {
+	display: flex;
+    flex-direction: column;
+	gap: 12px;
+}
+#activeQuizes h3 {
+    color: #FFFFFF;
+    text-align: center;
+}
+.quiz-card {
+	background: #222222;
+	border: 0.5px solid rgba(255, 255, 255, 0.08);
+	border-radius: 12px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+.quiz-topic {
+    color: #FFFFFF;
+	font-size: 15px;
+	font-weight: 500;
+	margin: 0;
+}
+.quiz-meta {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+.badge {
+	font-size: 12px;
+	padding: 3px 10px;
+	border-radius: 6px;
+}
+.badge-q {
+	background: rgba(56, 139, 253, 0.15);
+	color: #58a6ff;
+}
+.badge-s {
+	background: rgba(255, 255, 255, 0.06);
+	color: #8b949e;
+}
+.join-btn {
+    color: #FFFFFF;
+	margin-top: auto;
+	padding: 8px 14px;
+	font-size: 13px;
+	font-weight: 500;
+	border-radius: 8px;
+	border: 0.5px solid rgba(126, 125, 125, 0.15);
+	background: transparent;
+	cursor: pointer;
+	width: 100%;
+	text-align: center;
+	text-decoration: none;
+	display: block;
+}
+.join-btn:hover {
+	background: rgba(255, 255, 255, 0.05);
+}

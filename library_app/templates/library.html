@@ -1,0 +1,49 @@
+{% extends "base_admin.html" %}
+
+{% block title  %}
+Бібліотека
+{% endblock %}
+
+{% block head  %}
+<link rel="stylesheet" href="{{url_for('library_app.static', filename = 'css/library.css')}}">
+{% endblock %}
+
+{% block name_page %}
+Створено мною
+{% endblock %}
+
+{% block content %}
+<div class = "search">
+    <h2>Давайте створемо вікторину!</h2>
+    <form class="search-line" id="searchForm">
+        <img src="{{ url_for('admin_app.static', filename= 'images/search.svg') }}">
+        <input type="text" id="searchInput" placeholder="Знайдіть будь-яку тему...">
+        <button>
+            <img src="{{ url_for('admin_app.static', filename= 'images/search_button.svg') }}">
+        </button>
+    </form>
+</div>
+
+<div class="quizes">
+    {% for quiz in created_quizes %}    
+        <a href="/host/{{ quiz.id }}" class="quiz">
+            <img src="{{ url_for('library_app.static', filename= quiz.image) }}" alt="">
+            <div class="quiz-info">
+                <h3>{{ quiz.name[:30] + "..." if quiz.name|length > 27 else quiz.name }}</h3>
+                <div>
+                    <p class="desc">{{ quiz.description }}</p>
+                    <hr>
+                    <p>{{ quiz.count_questions }} Запитань</p>
+                    <hr>
+                    <p>Було використано для <br> проходженння: {{ quiz.codes|length }}</p>
+                </div>
+            </div>
+        </a>
+    {% endfor %}        
+</div>
+{% endblock %}
+    
+{% block scripts %}
+    <script src="{{ url_for('library_app.static', filename='js/description.js') }}"></script>
+    <script src="{{ url_for('library_app.static', filename='js/search.js') }}"></script>
+{% endblock %}

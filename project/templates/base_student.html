@@ -1,0 +1,76 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}  {% endblock %} | GPTQuiz</title>
+        <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/atom.svg') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/fonts.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/base_student.css') }}">
+        {% block head %} {% endblock %}
+    </head>
+    <body>
+        <aside id="aside">
+            <a class="title-logo" href="/">
+                <img src="{{ url_for('static', filename= 'images/atom.svg') }}">
+                <h1>GPTQuiz</h1>
+            </a>
+            <a href="/execution/" class="enter-code" id="asideEnterCode">
+                <p>Введіть код</p>
+            </a>
+            <div class="links">
+                <a class="tab-link" href="/student/statistic">
+                    <div class="tab-link-content">
+                        <img src="{{ url_for('static', filename= 'images/reports.svg') }}">
+                        <p>Статистика</p>
+                    </div>
+                    <div class="divider statisticLink"></div>
+                </a>
+                <a class="tab-link" href="/student/my-classroom">
+                    <div class="tab-link-content">
+                        <img src="{{ url_for('static', filename= 'images/classroom.svg') }}">
+                        <p>Мій клас</p>
+                    </div>
+                    <div class="divider myClassLink"></div>
+                </a>
+                <a class="tab-link" href="/student/me">
+                    <div class="tab-link-content">
+                        <img src="{{ url_for('static', filename= 'images/avatar.svg') }}">
+                        <p>Мій профіль</p>
+                    </div>
+                    <div class="divider profileLink"></div>
+                </a>
+            </div>
+            <div class="bottom-aside">
+                <p>© 2026 GPTQuiz</p>
+                <p>Всі права захищені.</p>
+            </div>
+        </aside>
+        <div id="blurrr"></div>
+        <header class="nav">
+            <div class="firstNav">
+                {% if not main_page %}
+                    <button class="backContainer" onclick="goBack()">
+                        <img src="{{ url_for('static', filename= 'images/left-arrow.svg') }}">
+                    </button>
+                {% endif %}
+                <h2 class="name-page">{% block name_page %}{% endblock %}</h2>
+                <div class="extended-name">{% block extended_name %}{% endblock %}</div>
+            </div>
+            <div class="secondNav">
+                <a href="/execution/" class="enter-code" id="headerEnterCode">Введіть код</a>
+                <a href="/student/me" id="username">{{ current_user.surname }} {{ current_user.name }}</a>
+                <button id="burgerMenuBtn">
+                    <img src="{{ url_for('static', filename= 'images/menu.svg') }}">
+                </button>
+            </div>
+        </header>
+        <main class="main">
+            {% block content %}
+                
+            {% endblock %}
+        </main>
+        <script src="{{ url_for('static', filename= 'js/ApexCharts.js') }}"></script>
+        <script src="{{ url_for('static', filename= 'js/openCloseBurgerMenu.js') }}"></script>
+        <script src="{{ url_for('static', filename= 'js/goBack.js') }}"></script>
+    </body>
+</html>

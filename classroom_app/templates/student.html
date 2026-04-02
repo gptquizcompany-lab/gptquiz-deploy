@@ -1,0 +1,80 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+    {{ student.surname }} {{ student.name }}
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('classroom_app.static', filename= 'css/student.css') }}">
+{% endblock %}
+
+{% block name_page %}
+    Учень: {{ student.surname }} {{ student.name }}
+{% endblock %}
+
+{% block extended_name %}
+    {% if student.classroom.teacher_id == current_user.id %}
+        <button id="getDataLogin" class="enter-code btnnav" value="{{ student.id }}">Забув пароль?</button>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="stats">
+    <h1>Загальні результати учня</h1>
+
+    <div class="charts-grid">
+        <div class="chart-card">
+            <h3>Прогрес</h3>
+            <div id="lineChart"></div>
+        </div>
+        <div class="chart-card">
+            <h3>Оцінки</h3>
+            <div id="pieChart"></div>
+        </div>
+    </div>
+
+    <div class="controls-container">
+        <input type="date" id="start_date" class="date-input">
+        <p>—</p>
+        <input type="date" id="end_date" class="date-input">
+        <button onclick="updateCharts()" class="update-btn">Оновити дані</button>
+    </div>
+
+    <input type="hidden" id="student_id" value="{{ student.id }}">
+</div>
+<div class="history">
+    <h2>Історія проходжень тестувань:</h2>
+    {% for report in student.my_reports %}
+        <hr>
+        <a href="/student/report/{{ report.hash_code }}">
+            <span class="date-part">Дата: {{ report.created_at.strftime('%d.%m') }}</span>
+            <span class="time-part">Час приєднання: {{ report.created_at.strftime('%H:%M') }}</span>
+            <span class="score-part">Оцінка: <b>{{ report.grade }}</b></span>
+        </a>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block modals %}
+<div id="modalInfo" class="modalinfo hideform">
+    <h4>Передайте учню його дані:</h4>
+    <div class="info-in-modal">
+        <p><b>Логін</b>: <span id="login"></span></p>
+        <p><b>Пароль</b>: <span id="password"></span></p>
+    </div>
+    <div class="buttons-in-modal">
+        <button type="button" id="okbtn" class="submit">OK</button>
+        <button type="button" id="copybtn" class="copy">
+            <img id="img-copy" src="{{ url_for('host_app.static', filename='images/copy.svg') }}">
+        </button>
+    </div>
+</div>
+<div class="blur hideform" id="blur"></div>
+<input type="hidden" id="classroomId" value="{{ student.classroom.id }}">
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename= 'js/ApexCharts.js') }}"></script>
+    <script src="{{ url_for('classroom_app.static', filename='js/getDataLogin.js') }}"></script>
+    <script src="{{ url_for('student_app.static', filename='js/main_charts.js')}}"></script>
+{% endblock %}

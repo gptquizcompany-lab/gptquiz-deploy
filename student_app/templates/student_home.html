@@ -1,0 +1,67 @@
+{% extends 'base_student.html' %}
+
+{% block title %}
+    Домашня сторінка
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('student_app.static', filename= 'css/student_home.css') }}">
+{% endblock %}
+
+{% block name_page %}
+    Головна
+{% endblock %}
+
+{% block content %}
+<div class="welcome">
+    <h1 class="welcome-text">Привіт, {{ current_user.surname }} {{ current_user.name }}!</h1>
+</div>
+<hr>
+<div id="activeQuizes">
+
+</div>
+<div>
+    <input type="hidden" id="classroomId" value="{{ current_user.classroom.id }}">
+    {% if not results %}
+        <p class="nothing-text">Тут поки що нічого немає...</p>
+    {% else %}
+        <div class="stats">
+            <h1>Твої загальні результати:</h1>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Твій прогрес</h3>
+                    <div id="lineChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h3>Статистика оцінок</h3>
+                    <div id="pieChart"></div>
+                </div>
+            </div>
+
+            <div class="controls-container">
+                <input type="date" id="start_date" class="date-input">
+                <p>—</p>
+                <input type="date" id="end_date" class="date-input">
+                <button onclick="updateCharts()" class="update-btn">Оновити дані</button>
+            </div>
+
+            <input type="hidden" id="student_id" value="{{ current_user.id }}">
+        </div>
+        <hr>    
+        <div class="history">
+            <h2>Твої попередні результати тестів:</h2>
+            {% for report in results %}
+                <hr>
+                <a href="/student/report/{{ report.hash_code }}">
+                    <span class="date-part">Дата: {{ report.created_at.strftime('%d.%m') }}</span>
+                    <span class="time-part">Час проходження: {{ report.created_at.strftime('%H:%M') }}</span>
+                    <span class="score-part">Оцінка: <b>{{ report.grade }}</b></span>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+<script src="{{ url_for('student_app.static', filename='js/getActiveRooms.js')}}"></script>
+<script src="{{ url_for('student_app.static', filename='js/main_charts.js')}}"></script>
+{% endblock %}
